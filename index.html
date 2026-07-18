@@ -746,41 +746,39 @@ function renderMesaLibre(mesa) {
 // ── Arrastre de tarjetas ──────────────────────────────────────────────
 // Se aplica al título de cada tarjeta en mesa libre
 function activarArrastre(tarjeta, id) {
-  let touches = [];
+  let initialDistance = 0;
   let initialScale = 1;
 
+  // ── PINCH-TO-ZOOM (dos dedos) ──
   tarjeta.addEventListener('touchstart', (ev) => {
-    touches = Array.from(ev.touches);
-    if (touches.length === 2) {
+    if (ev.touches.length === 2) {
+      const touch1 = ev.touches[0];
+      const touch2 = ev.touches[1];
+      const dx = touch1.clientX - touch2.clientX;
+      const dy = touch1.clientY - touch2.clientY;
+      initialDistance = Math.sqrt(dx * dx + dy * dy);
       initialScale = parseFloat(tarjeta.style.transform.match(/scale\(([\d.]+)\)/)?.[1] || '1');
     }
-  });
+  }, { passive: true });
 
   tarjeta.addEventListener('touchmove', (ev) => {
-    if (touches.length === 2) {
-      ev.preventDefault();
+    if (ev.touches.length === 2) {
       const touch1 = ev.touches[0];
       const touch2 = ev.touches[1];
       const dx = touch1.clientX - touch2.clientX;
       const dy = touch1.clientY - touch2.clientY;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      const initialTouch1 = touches[0];
-      const initialTouch2 = touches[1];
-      const initialDx = initialTouch1.clientX - initialTouch2.clientX;
-      const initialDy = initialTouch1.clientY - initialTouch2.clientY;
-      const initialDistance = Math.sqrt(initialDx * initialDx + initialDy * initialDy);
-
       let newScale = initialScale * (distance / initialDistance);
       newScale = Math.min(Math.max(newScale, 0.6), 1);
       tarjeta.style.transform = `scale(${newScale})`;
-      return;
     }
-  });
+  }, { passive: false });
 
+  // ── ARRASTRE (un dedo) ──
   tarjeta.addEventListener('pointerdown', ev => {
     if (!estado.editor) return;
-    if (ev.touches && ev.touches.length > 1) return;
+    if (ev.pointerType === 'touch' && ev.touches && ev.touches.length > 1) return; // Ignorar si hay múltiples toques
     
     ev.preventDefault();
     tarjeta.classList.add('dragging');
