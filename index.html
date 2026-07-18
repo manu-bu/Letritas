@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1366, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Letritas</title>
+<style>
+
+/* =====================================================================
+   RESET Y BASE
+   iPad Air 13" M2: 1366 × 1024pt en Safari landscape (punto lógico).
+   La app es fija — no se adapta a otros tamaños.
+===================================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Dimensiones fijas */
+  --w: 1366px;
+  --h: 100dvh;
+  --header-h: 72px;
+  --mesa-top: 72px;
+
+  /* Paleta neutra */
+  --bg-app:        #e9e9e7;
+  --bg-header:     #e9e9e7;
+  --border-header: #d4d4d2;
+  --bg-mesa:       #d8d8d6;
+
+  /* Selectores */
+  --sel-bg:        #ffffff;
+  --sel-border:    #b8b8b6;
+  --sel-radius:    22px;
+  --sel-h:         44px;
+  --sel-font:      13px;
+  --sel-color:     #9a9a98;
+
+  /* Botones editor */
+  --btn-size:      44px;
+  --btn-bg:        #ffffff;
+  --btn-border:    #b8b8b6;
+  --btn-active-glow:#aaff00;
+  --btn-active-border:#88cc00;
+
+  /* Tarjetas */
+  --card-bg:       #ffffff;
+  --card-radius:   16px;
+  --card-padding:  16px;
+  --card-border-w: 3px;
+
+  /* Fuente */
+  --font: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+}
+
+html, body {
+  width: var(--w);
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg-app);
+  font-family: var(--font);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* =====================================================================
+   BARRA DE HERRAMIENTAS
+===================================================================== */
+header {
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--w);
+  height: var(--header-h);
+  background: var(--bg-header);
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 100;
+}
+
+/* --- SELECTORES (izquierda) --- */
+.selectores {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.selector {
+  height: var(--sel-h);
+  border-radius: var(--sel-radius);
+  border: var(--card-border-w) solid transparent;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(135deg, #c8c8c6, #a0a0a0) border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  font-size: var(--sel-font);
+  color: var(--sel-color);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+/* Ancho mínimo diferenciado — el 1 es el más largo */
+.sel-unidad   { min-width: 200px; }
+.sel-tema     { min-width: 120px; }
+.sel-subtema  { min-width: 100px; }
+
+/* Estado activo (tiene contenido): borde de color, texto oscuro */
+.selector.activo {
+  color: #3a3a38;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(135deg, #888886, #606060) border-box;
+}
+
+
+/* Selector sin contenido siguiente — se achica a círculo */
+.selector.circulo {
+  min-width: 0 !important;
+  width: var(--sel-h);
+  padding: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(135deg, #d8d8d6, #c0c0be) border-box;
+  color: transparent;
+}
+
+/* --- BOTONES EDICIÓN (derecha) --- */
+.botones-edicion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-editor {
+  width: var(--btn-size);
+  height: var(--btn-size);
+  border-radius: 50%;
+  border: var(--card-border-w) solid transparent;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(135deg, #c8c8c6, #a0a0a0) border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  position: relative;
+  filter: grayscale(100%) opacity(0.5);
+  transition: filter 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+/* Prendido */
+.btn-editor.activo {
+  filter: none;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(135deg, #88cc00, #aaff00) border-box;
+  box-shadow:
+    0 0 0 3px rgba(170,255,0,0.10),
+    0 0 12px 3px rgba(170,255,0,0.28);
+}
+
+/* Deshabilitado (mesa fija) */
+.btn-editor.deshabilitado {
+  pointer-events: none;
+  opacity: 0.2;
+  filter: grayscale(100%);
+}
+
+/* =====================================================================
+   MESA DE TARJETAS
+===================================================================== */
+.mesa {
+  position: fixed;
+  top: var(--mesa-top);
+  left: 0;
+  width: var(--w);
+  height: calc(100dvh - var(--mesa-top));
+  background: transparent;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Estado vacío */
+.mesa-vacia {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+/* =====================================================================
+   TARJETA FIJA (para mesa estática)
+===================================================================== */
+.tarjeta {
+  position: absolute;
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  border: var(--card-border-w) solid transparent;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(135deg, #c8c8c6, #a0a0a0) border-box;
+  display: inline-flex;
+  flex-direction: column;
+  min-width: 160px;
+  max-width: 420px;
+  cursor: default;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: box-shadow 0.2s, transform 0.1s;
+  touch-action: none;
+}
+
+.tarjeta:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.tarjeta.dragging {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  transform: scale(1.02);
+  z-index: 1000;
+}
+
+.tarjeta:active { cursor: grabbing; }
+
+.tarjeta-titulo {
+  padding: 10px var(--card-padding) 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #888886;
+  border-bottom: 1px solid #ebebeb;
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+  cursor: grab;
+  background: linear-gradient(to right, #f9f9f7, #ffffff);
+  user-select: none;
+}
+
+.tarjeta-titulo:hover {
+  background: linear-gradient(to right, #f5f5f3, #fafaf8);
+}
+
+.tarjeta-titulo:active {
+  cursor: grabbing;
+}
+
+.tarjeta-cuerpo {
+  padding: var(--card-padding);
+}
+
+.mesa-fija {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 12px;
+  padding: 14px 16px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.tarjeta-fija .tarjeta-titulo {
+  cursor: default;
+}
+
+/* =====================================================================
+   MENÚ DESPLEGABLE (selectores al pulsar)
+===================================================================== */
+.dropdown {
+  position: absolute;
+  top: calc(var(--header-h) - 4px);
+  left: 20px;
+  background: #ffffff;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(135deg, #c8c8c6, #a0a0a0) border-box;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+  min-width: 200px;
+  z-index: 500;
+  overflow: hidden;
+  display: none;
+}
+
+.dropdown.visible { display: block; }
+
+.dropdown-item {
+  padding: 12px 18px;
+  font-size: 14px;
+  color: #3a3a38;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0ee;
+  transition: background 0.1s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.dropdown-item:last-child { border-bottom: none; }
+.dropdown-item:hover { background: #f5f5f3; }
+.dropdown-item.seleccionado { font-weight: 600; }
+
+</style>
+</head>
+<body>
+
+<!-- =====================================================================
+     BARRA DE HERRAMIENTAS
+===================================================================== -->
+<header>
+
+  <!-- SELECTORES IZQUIERDA -->
+  <div class="selectores">
+    <div class="selector sel-unidad" id="selUnidad" onclick="toggleDropdown('dropUnidad')">
+      Unidad
+    </div>
+    <div class="selector sel-tema" id="selTema" onclick="toggleDropdown('dropTema')">
+      Tema
+    </div>
+    <div class="selector sel-subtema" id="selSubtema" onclick="toggleDropdown('dropSubtema')">
+      Sub-tema
+    </div>
+  </div>
+
+  <!-- BOTONES EDICIÓN DERECHA -->
+  <div class="botones-edicion">
+    <div class="btn-editor deshabilitado" id="btnTarjetas" onclick="abrirTarjetas()" title="Tarjetas">T</div>
+    <div class="btn-editor deshabilitado" id="btnGuardar"  onclick="guardar()"       title="Guardar">S</div>
+    <div class="btn-editor deshabilitado" id="btnLapiz"    onclick="toggleEditor()"  title="Editor">✏️</div>
+  </div>
+
+</header>
+
+<!-- DROPDOWNS -->
+<div class="dropdown" id="dropUnidad"></div>
+<div class="dropdown" id="dropTema"></div>
+<div class="dropdown" id="dropSubtema"></div>
+
+<!-- =====================================================================
+     MESA DE TARJETAS
+===================================================================== -->
+<div class="mesa" id="mesa">
+  <div class="mesa-vacia" id="mesaVacia">Seleccioná una unidad para empezar</div>
+</div>
+
+
+<!-- =====================================================================
+     JAVASCRIPT — LÓGICA BASE
+===================================================================== -->
+<script>
+
+const estado = {
+  unidad:   null,
+  tema:     null,
+  subtema:  null,
+  tipoMesa: null,   // 'libre' | 'fija'
+  editor:   true,   // ← PRENDIDO POR DEFECTO
+  tarjetas: {}      // posiciones guardadas por id de tarjeta
+};
+
+// ── UNIDADES (plantilla: W=libre, V=fija, T=libre) ───────────────────
+const UNIDADES = {
+  'W': {
+    nombre: 'W',
+    tipo: 'libre',
+    temas: null
+  },
+  'T': {
+    nombre: 'T',
+    tipo: 'libre',
+    temas: {
+      'T1': { 
+        nombre: 'T1', 
+        subtemas: {
+          'T1a': { nombre: 'T1a' },
+          'T1b': { nombre: 'T1b' }
+        }
+      },
+      'T2': { nombre: 'T2', subtemas: null }
+    }
+  },
+  'V': {
+    nombre: 'V',
+    tipo: 'fija',
+    temas: {
+      'V1': { nombre: 'V1', subtemas: null },
+      'V2': { nombre: 'V2', subtemas: null },
+      'V3': { nombre: 'V3', subtemas: null }
+    }
+  }
+};
+
+// ── CONTENIDO DE TARJETAS (prueba para W) ──────────────────────────────
+const CONTENIDO_TARJETAS = {
+  'W': [
+    {
+      id: 'tarjeta-texto',
+      titulo: 'Tarjeta de Texto',
+      tipo: 'texto',
+      render: function() {
+        const div = document.createElement('div');
+        div.className = 'tarjeta';
+        div.innerHTML = `
+          <div class="tarjeta-titulo">Tarjeta de Texto</div>
+          <div class="tarjeta-cuerpo">
+            Esto es una prueba de texto
+          </div>
+        `;
+        return div;
+      }
+    },
+    {
+      id: 'tarjeta-columnas',
+      titulo: 'Tarjeta de Columnas',
+      tipo: 'columnas',
+      render: function() {
+        const div = document.createElement('div');
+        div.className = 'tarjeta';
+        let html = `
+          <div class="tarjeta-titulo">Tarjeta de Columnas</div>
+          <div class="tarjeta-cuerpo">
+            <table style="width:100%; border-collapse: collapse; font-size: 12px;">
+        `;
+        for (let i = 0; i < 10; i++) {
+          html += `
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 4px; font-weight: 600;">prueba</td>
+              <td style="padding: 4px;">texto columnas</td>
+            </tr>
+          `;
+        }
+        html += `
+            </table>
+          </div>
+        `;
+        div.innerHTML = html;
+        return div;
+      }
+    }
+  ]
+};
+
+// ── Dropdowns ─────────────────────────────────────────────────────────
+function toggleDropdown(id) {
+  const todos = document.querySelectorAll('.dropdown');
+  const target = document.getElementById(id);
+  const yaAbierto = target.classList.contains('visible');
+  todos.forEach(d => d.classList.remove('visible'));
+  if (!yaAbierto) target.classList.add('visible');
+}
+
+// Cerrar al tocar fuera
+document.addEventListener('click', e => {
+  if (!e.target.closest('.selector') && !e.target.closest('.dropdown')) {
+    document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('visible'));
+  }
+});
+
+// ── Actualizar estado visual de los 3 selectores ──────────────────────
+function actualizarSelectores() {
+  const u = estado.unidad ? UNIDADES[estado.unidad] : null;
+
+  // Selector 1 — siempre activo con el nombre de la unidad
+  const s1 = document.getElementById('selUnidad');
+  s1.textContent = u ? u.nombre : 'Unidad';
+  s1.classList.toggle('activo', !!u);
+  s1.classList.remove('circulo');
+
+  const s2 = document.getElementById('selTema');
+  const s3 = document.getElementById('selSubtema');
+
+  // Sin unidad
+  if (!u) {
+    s2.textContent = ''; s2.className = 'selector sel-tema circulo';
+    s3.textContent = ''; s3.className = 'selector sel-subtema circulo';
+    return;
+  }
+
+  // Con temas
+  if (u.temas) {
+    const primerTemaKey = Object.keys(u.temas)[0];
+    const temaActual = estado.tema || primerTemaKey;
+    if (!estado.tema) estado.tema = primerTemaKey;
+    s2.textContent = UNIDADES[estado.unidad].temas[temaActual].nombre;
+    s2.className = 'selector sel-tema activo';
+    s2.style.pointerEvents = '';
+
+    // Con sub-temas
+    const temaObj = u.temas[temaActual];
+    if (temaObj.subtemas) {
+      const primerSubKey = Object.keys(temaObj.subtemas)[0];
+      if (!estado.subtema) estado.subtema = primerSubKey;
+      s3.textContent = temaObj.subtemas[estado.subtema].nombre;
+      s3.className = 'selector sel-subtema activo';
+      s3.style.pointerEvents = '';
+    } else {
+      s3.textContent = '';
+      s3.className = 'selector sel-subtema circulo';
+    }
+  } else {
+    // Sin temas — selector 2 y 3 en círculo
+    estado.tema = null;
+    estado.subtema = null;
+    s2.textContent = ''; s2.className = 'selector sel-tema circulo';
+    s3.textContent = ''; s3.className = 'selector sel-subtema circulo';
+  }
+}
+
+// ── Elegir unidad ─────────────────────────────────────────────────────
+function elegirUnidad(key, nombre, tipo) {
+  estado.unidad   = key;
+  estado.tema     = null;
+  estado.subtema  = null;
+  estado.tipoMesa = tipo;
+
+  // Si es unidad V (fija), apagar editor
+  // Si es unidad W (libre), mantener/activar editor
+  if (tipo === 'fija') {
+    estado.editor = false;
+  } else if (tipo === 'libre') {
+    estado.editor = true;
+  }
+
+  // Llenar dropdown de temas
+  const dropTema = document.getElementById('dropTema');
+  dropTema.innerHTML = '';
+  const u = UNIDADES[key];
+  if (u.temas) {
+    Object.entries(u.temas).forEach(([k, t]) => {
+      const div = document.createElement('div');
+      div.className = 'dropdown-item';
+      div.textContent = t.nombre;
+      div.onclick = () => elegirTema(k, t.nombre);
+      dropTema.appendChild(div);
+    });
+  }
+
+  document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('visible'));
+  actualizarBotones();
+  actualizarSelectores();
+  renderMesa();
+}
+
+// ── Elegir tema ───────────────────────────────────────────────────────
+function elegirTema(key, nombre) {
+  estado.tema    = key;
+  estado.subtema = null;
+
+  // Sub-temas del tema elegido
+  const u = UNIDADES[estado.unidad];
+  const t = u.temas[key];
+  const dropSub = document.getElementById('dropSubtema');
+  dropSub.innerHTML = '';
+  if (t.subtemas) {
+    Object.entries(t.subtemas).forEach(([k, s]) => {
+      const div = document.createElement('div');
+      div.className = 'dropdown-item';
+      div.textContent = s.nombre;
+      div.onclick = () => elegirSubtema(k, s.nombre);
+      dropSub.appendChild(div);
+    });
+  }
+
+  document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('visible'));
+  actualizarSelectores();
+  renderMesa();
+}
+
+// ── Elegir sub-tema ───────────────────────────────────────────────────
+function elegirSubtema(key, nombre) {
+  estado.subtema = key;
+  document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('visible'));
+  actualizarSelectores();
+  renderMesa();
+}
+
+// ── Botones de edición ────────────────────────────────────────────────
+function actualizarBotones() {
+  const esFija = estado.tipoMesa === 'fija';
+  ['btnLapiz','btnTarjetas','btnGuardar'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (esFija) {
+      btn.classList.add('deshabilitado');
+      btn.classList.remove('activo');
+    } else {
+      btn.classList.remove('deshabilitado');
+      // Si es libre y editor está activo, mostrar botones activos
+      if (estado.editor) {
+        btn.classList.add('activo');
+      } else {
+        btn.classList.remove('activo');
+      }
+    }
+  });
+}
+
+function toggleEditor() {
+  if (estado.tipoMesa === 'fija') return;
+  estado.editor = !estado.editor;
+  const lapiz    = document.getElementById('btnLapiz');
+  const tarjetas = document.getElementById('btnTarjetas');
+  const guardar  = document.getElementById('btnGuardar');
+
+  if (estado.editor) {
+    lapiz.classList.add('activo');
+    tarjetas.classList.add('activo');
+    guardar.classList.add('activo');
+  } else {
+    apagarEditor();
+  }
+}
+
+function apagarEditor() {
+  estado.editor = false;
+  ['btnLapiz','btnTarjetas','btnGuardar'].forEach(id => {
+    document.getElementById(id).classList.remove('activo');
+  });
+}
+
+function abrirTarjetas() {
+  if (!estado.editor) return;
+}
+
+function guardar() {
+  if (!estado.editor) return;
+  localStorage.setItem('letritas_estado', JSON.stringify(estado.tarjetas));
+  const btn = document.getElementById('btnGuardar');
+  const textoOriginal = btn.textContent;
+  btn.textContent = '!';
+  btn.style.color = '#d63b2f'; // Rojo
+  setTimeout(() => { 
+    btn.textContent = 'S'; 
+    btn.style.color = '';
+  }, 800);
+}
+
+// ── Render de mesa ────────────────────────────────────────────────────
+function renderMesa() {
+  const mesa = document.getElementById('mesa');
+
+  if (!estado.unidad) {
+    mesa.innerHTML = '<div class="mesa-vacia">Seleccioná una unidad para empezar</div>';
+    return;
+  }
+
+  if (estado.tipoMesa === 'fija') {
+    renderMesaFija(mesa);
+  } else {
+    renderMesaLibre(mesa);
+  }
+}
+
+// Mesa fija: 4×2 con plantilla de 8 items — sin contenido
+function renderMesaFija(mesa) {
+  mesa.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'mesa-fija';
+
+  const items_fija = [
+    { titulo: 'Item 1', color1: '#d63b2f', color2: '#c02a20' },
+    { titulo: 'Item 2', color1: '#e8821e', color2: '#c86a10' },
+    { titulo: 'Item 3', color1: '#e8c91e', color2: '#c8a810' },
+    { titulo: 'Item 4', color1: '#e85ca8', color2: '#c84090' },
+    { titulo: 'Item 5', color1: '#3a3a3a', color2: '#1a1a1a' },
+    { titulo: 'Item 6', color1: '#4caf3a', color2: '#2a8f20' },
+    { titulo: 'Item 7', color1: '#2f7fe0', color2: '#1060c0' },
+    { titulo: 'Item 8', color1: '#7b3fd6', color2: '#5a20b0' }
+  ];
+
+  items_fija.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'tarjeta-fija';
+    card.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, ${t.color1}, ${t.color2}) border-box`;
+    card.style.border = `var(--card-border-w) solid transparent`;
+    card.style.borderRadius = `var(--card-radius)`;
+    card.innerHTML = `
+      <div class="tarjeta-titulo" style="color: ${t.color1};">${t.titulo}</div>
+      <div class="tarjeta-cuerpo" style="flex:1; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:12px;">
+        contenido
+      </div>`;
+    grid.appendChild(card);
+  });
+
+  mesa.appendChild(grid);
+}
+
+// Mesa libre: tarjetas arrastrables, aparecen en esquina sup izq
+function renderMesaLibre(mesa) {
+  mesa.innerHTML = '';
+
+  // Obtener las tarjetas del contenido
+  const clave = estado.unidad; // Para W, la clave es 'W'
+  const tarjetasDisponibles = CONTENIDO_TARJETAS[clave] || [];
+
+  if (tarjetasDisponibles.length === 0) {
+    mesa.innerHTML = '<div class="mesa-vacia" style="opacity:0.4">Mesa lista — sin tarjetas para esta unidad</div>';
+    return;
+  }
+
+  // Renderizar cada tarjeta
+  tarjetasDisponibles.forEach(def => {
+    if (!def.render) return;
+
+    const tarjeta = def.render();
+    tarjeta.id = def.id;
+    tarjeta.style.position = 'absolute';
+    
+    // Recuperar posición guardada, o usar posición por defecto
+    if (estado.tarjetas[def.id]) {
+      tarjeta.style.left = estado.tarjetas[def.id].left + 'px';
+      tarjeta.style.top = estado.tarjetas[def.id].top + 'px';
+      const scale = estado.tarjetas[def.id].scale || 1;
+      tarjeta.style.transform = `scale(${scale})`;
+    } else {
+      tarjeta.style.left = '20px';
+      tarjeta.style.top = (20 + tarjetasDisponibles.indexOf(def) * 120) + 'px';
+      tarjeta.style.transform = 'scale(1)';
+    }
+    
+    tarjeta.draggable = true;
+
+    // Aplicar mecánica de arrastre
+    activarArrastre(tarjeta, def.id);
+
+    mesa.appendChild(tarjeta);
+  });
+}
+
+// ── Arrastre de tarjetas ──────────────────────────────────────────────
+// Se aplica al título de cada tarjeta en mesa libre
+function activarArrastre(tarjeta, id) {
+  let touches = [];
+  let initialScale = 1;
+
+  tarjeta.addEventListener('touchstart', (ev) => {
+    touches = Array.from(ev.touches);
+    if (touches.length === 2) {
+      initialScale = parseFloat(tarjeta.style.transform.match(/scale\(([\d.]+)\)/)?.[1] || '1');
+    }
+  });
+
+  tarjeta.addEventListener('touchmove', (ev) => {
+    if (touches.length === 2) {
+      ev.preventDefault();
+      const touch1 = ev.touches[0];
+      const touch2 = ev.touches[1];
+      const dx = touch1.clientX - touch2.clientX;
+      const dy = touch1.clientY - touch2.clientY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      const initialTouch1 = touches[0];
+      const initialTouch2 = touches[1];
+      const initialDx = initialTouch1.clientX - initialTouch2.clientX;
+      const initialDy = initialTouch1.clientY - initialTouch2.clientY;
+      const initialDistance = Math.sqrt(initialDx * initialDx + initialDy * initialDy);
+
+      let newScale = initialScale * (distance / initialDistance);
+      newScale = Math.min(Math.max(newScale, 0.6), 1);
+      tarjeta.style.transform = `scale(${newScale})`;
+      return;
+    }
+  });
+
+  tarjeta.addEventListener('pointerdown', ev => {
+    if (!estado.editor) return;
+    if (ev.touches && ev.touches.length > 1) return;
+    
+    ev.preventDefault();
+    tarjeta.classList.add('dragging');
+    tarjeta.style.zIndex = 1000;
+    const mesa = document.getElementById('mesa');
+    const rectMesa = mesa.getBoundingClientRect();
+    const rectCard = tarjeta.getBoundingClientRect();
+
+    const ox = ev.clientX - rectCard.left;
+    const oy = ev.clientY - rectCard.top;
+    const maxX = rectMesa.width  - rectCard.width;
+    const maxY = rectMesa.height - rectCard.height;
+
+    function mover(ev2) {
+      const nx = Math.min(Math.max(0, ev2.clientX - rectMesa.left - ox), maxX);
+      const ny = Math.min(Math.max(0, ev2.clientY - rectMesa.top  - oy), maxY);
+      tarjeta.style.left = nx + 'px';
+      tarjeta.style.top  = ny + 'px';
+    }
+    function soltar() {
+      document.removeEventListener('pointermove', mover);
+      document.removeEventListener('pointerup', soltar);
+      tarjeta.classList.remove('dragging');
+      estado.tarjetas[id] = {
+        left: parseInt(tarjeta.style.left),
+        top:  parseInt(tarjeta.style.top),
+        scale: parseFloat(tarjeta.style.transform.match(/scale\(([\d.]+)\)/)?.[1] || '1')
+      };
+    }
+
+    document.addEventListener('pointermove', mover);
+    document.addEventListener('pointerup', soltar);
+  });
+}
+
+// ── Inicialización al cargar ──────────────────────────────────────────
+function iniciarDropdownUnidades() {
+  const drop = document.getElementById('dropUnidad');
+  drop.innerHTML = '';
+  Object.entries(UNIDADES).forEach(([key, u]) => {
+    const div = document.createElement('div');
+    div.className = 'dropdown-item';
+    div.textContent = u.nombre;
+    div.onclick = () => elegirUnidad(key, u.nombre, u.tipo);
+    drop.appendChild(div);
+  });
+}
+
+iniciarDropdownUnidades();
+
+// Cargar estado guardado de localStorage
+const estadoGuardado = localStorage.getItem('letritas_estado');
+if (estadoGuardado) {
+  try {
+    estado.tarjetas = JSON.parse(estadoGuardado);
+  } catch (e) {
+    console.error('Error al cargar estado guardado', e);
+  }
+}
+
+// Cargar la primera unidad automáticamente
+if (Object.keys(UNIDADES).length > 0) {
+  const primeraKey = Object.keys(UNIDADES)[0];
+  const primeraUnidad = UNIDADES[primeraKey];
+  if (primeraUnidad) {
+    elegirUnidad(primeraKey, primeraUnidad.nombre, primeraUnidad.tipo);
+  }
+}
+
+</script>
+<!-- FONDO DE PARTÍCULAS RIPPLE -->
+<canvas id="canvasRipple" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+
+<script>
+(function() {
+  const canvas = document.getElementById('canvasRipple');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+
+  const grises = ['#b0b0ae','#989896','#c8c8c6','#a0a0a0','#d0d0ce','#888886'];
+
+  const ripples = [];
+
+  function spawnRipple() {
+    ripples.push({
+      x:     Math.random() * canvas.width,
+      y:     Math.random() * canvas.height,
+      r:     0,
+      maxR:  35 + Math.random() * 55,
+      color: grises[Math.floor(Math.random() * grises.length)],
+      speed: 0.35 + Math.random() * 0.4
+    });
+    // Intervalo más corto para más ripples simultáneas bien distribuidas
+    setTimeout(spawnRipple, 150 + Math.random() * 400);
+  }
+
+  // Arranca con varios ripples ya en progreso para que no empiece vacío
+  for (let i = 0; i < 16; i++) {
+    const maxR = 35 + Math.random() * 55;
+    ripples.push({
+      x:     Math.random() * canvas.width,
+      y:     Math.random() * canvas.height,
+      r:     Math.random() * maxR,
+      maxR,
+      color: grises[Math.floor(Math.random() * grises.length)],
+      speed: 0.35 + Math.random() * 0.4
+    });
+  }
+  spawnRipple();
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = ripples.length - 1; i >= 0; i--) {
+      const rp = ripples[i];
+      rp.r += rp.speed;
+      const progress = rp.r / rp.maxR;
+      const alpha    = (1 - progress) * 0.3;
+
+      if (alpha <= 0.005) { ripples.splice(i, 1); continue; }
+
+      ctx.beginPath();
+      ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
+      ctx.strokeStyle = rp.color;
+      ctx.lineWidth   = 1.8 * (1 - progress * 0.7);
+      ctx.globalAlpha = alpha;
+      ctx.stroke();
+    }
+
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+
+  requestAnimationFrame(draw);
+})();
+</script>
+
+</body>
+</html>
