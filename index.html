@@ -634,6 +634,12 @@ function elegirUnidad(key, nombre, tipo) {
       div.onclick = () => elegirTema(k, t.nombre);
       dropTema.appendChild(div);
     });
+    
+    // Seleccionar automáticamente el primer tema
+    const primerTemaKey = Object.keys(u.temas)[0];
+    if (primerTemaKey) {
+      elegirTema(primerTemaKey, u.temas[primerTemaKey].nombre);
+    }
   }
 
   document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('visible'));
@@ -678,6 +684,13 @@ function elegirTema(key, nombre) {
       div.onclick = () => elegirSubtema(k, s.nombre);
       dropSub.appendChild(div);
     });
+    
+    // Seleccionar automáticamente el primer subtema (alfabéticamente)
+    if (subtemasSorted.length > 0) {
+      const primerSubtemaKey = subtemasSorted[0][0];
+      const primerSubtemaNombre = subtemasSorted[0][1].nombre;
+      elegirSubtema(primerSubtemaKey, primerSubtemaNombre);
+    }
   }
 
   document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('visible'));
