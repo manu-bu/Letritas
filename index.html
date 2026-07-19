@@ -473,6 +473,8 @@ header {
 ===================================================================== */
 
 body.tema-letras { background: #B8E3F0 !important; }
+body.tema-cultura-pais { background: #B8E3F0 !important; }
+body.tema-cultura-gastronomia { background: #8B7B6F !important; }
 body.tema-verbos { background: #F5F3F0 !important; }
 body.tema-caso1 { background: #5C1E1E !important; }
 body.tema-caso2 { background: #6B6B63 !important; }
@@ -594,12 +596,26 @@ const UNIDADES = {
   'CULTURA': {
     nombre: 'CULTURA',
     tipo: 'libre',
-    temas: null
+    temas: {
+      'pais': { nombre: 'País' },
+      'gastronomia': { nombre: 'Gastronomía' }
+    }
   },
   'GEOGRAFÍA Y CLIMA': {
     nombre: 'GEOGRAFÍA Y CLIMA',
     tipo: 'libre',
-    temas: null
+    temas: {
+      'terreno': { nombre: 'Terreno' },
+      'flora_fauna': { nombre: 'Flora y Fauna' },
+      'clima_estaciones': { nombre: 'Clima y Estaciones' },
+      'actividades': { 
+        nombre: 'Actividades',
+        subtemas: {
+          'invierno': { nombre: 'Invierno' },
+          'verano': { nombre: 'Verano' }
+        }
+      }
+    }
   },
   'MODOS Y FRASES': {
     nombre: 'MODOS Y FRASES',
@@ -653,21 +669,15 @@ const UNIDADES = {
 const CONTENIDO_TARJETAS = {
   'ABECEDARIO': [
     {
-      id: 'tarjeta-abecedario',
-      titulo: 'Abecedario',
-      tipo: 'abecedario',
+      id: 'tarjeta-letras1',
+      titulo: 'Letras 1',
+      tipo: 'letras1',
       render: function() {
         const div = document.createElement('div');
         div.className = 'tarjeta';
         div.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #4A9FB5, #B5D9E8) border-box`;
         div.style.border = `var(--card-border-w) solid transparent`;
         div.style.borderRadius = `var(--card-radius)`;
-        let html = `
-          <div class="tarjeta-titulo">Abecedario</div>
-          <div class="tarjeta-cuerpo" style="padding:0;">
-        `;
-        
-        // Datos modelo español COMPLETO
         const abecedario = [
           { may: 'A', min: 'a', palabra: 'Abeja', representa: 'A' },
           { may: 'B', min: 'b', palabra: 'Barco', representa: 'B' },
@@ -680,7 +690,28 @@ const CONTENIDO_TARJETAS = {
           { may: 'I', min: 'i', palabra: 'Iglesia', representa: 'I' },
           { may: 'J', min: 'j', palabra: 'Jirafa', representa: 'J' },
           { may: 'K', min: 'k', palabra: 'Kilo', representa: 'K' },
-          { may: 'L', min: 'l', palabra: 'León', representa: 'L' },
+          { may: 'L', min: 'l', palabra: 'León', representa: 'L' }
+        ];
+        let html = `<div class="tarjeta-titulo">Letras 1 (A-L)</div><div class="tarjeta-cuerpo" style="padding:0;">`;
+        abecedario.forEach((letra, idx) => {
+          html += `<div style="display:flex; align-items:center; padding:6px 8px; border-bottom:1px solid #eee; gap:20px;"><div style="width:60px; text-align:center; cursor:pointer; user-select:none; font-weight:700;" class="hablar" data-hablar="${letra.min}"><span style="font-size:24px; color:#4A9FB5;">${letra.may}</span> <span style="font-size:14px; color:#17B8CE;">${letra.min}</span></div><div style="width:60px; text-align:center; cursor:pointer; user-select:none; font-size:14px;" class="hablar" data-hablar="${letra.palabra}">${letra.palabra}</div><div style="width:60px; text-align:center; font-weight:600; font-size:12px; color:#666;">${letra.representa}</div></div>`;
+        });
+        html += `</div>`;
+        div.innerHTML = html;
+        return div;
+      }
+    },
+    {
+      id: 'tarjeta-letras2',
+      titulo: 'Letras 2',
+      tipo: 'letras2',
+      render: function() {
+        const div = document.createElement('div');
+        div.className = 'tarjeta';
+        div.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #4A9FB5, #B5D9E8) border-box`;
+        div.style.border = `var(--card-border-w) solid transparent`;
+        div.style.borderRadius = `var(--card-radius)`;
+        const abecedario = [
           { may: 'M', min: 'm', palabra: 'Manzana', representa: 'M' },
           { may: 'N', min: 'n', palabra: 'Nube', representa: 'N' },
           { may: 'Ñ', min: 'ñ', palabra: 'Niño', representa: 'Ñ' },
@@ -697,26 +728,12 @@ const CONTENIDO_TARJETAS = {
           { may: 'Y', min: 'y', palabra: 'Yo-yo', representa: 'Y' },
           { may: 'Z', min: 'z', palabra: 'Zapato', representa: 'Z' }
         ];
-        
+        let html = `<div class="tarjeta-titulo">Letras 2 (M-Z)</div><div class="tarjeta-cuerpo" style="padding:0;">`;
         abecedario.forEach((letra, idx) => {
-          html += `
-            <div style="display:flex; align-items:center; padding:6px 8px; border-bottom:1px solid #eee; gap:30px;">
-              <div style="width:50px; text-align:center; cursor:pointer; user-select:none; font-weight:700;" class="hablar" data-hablar="${letra.min}">
-                <span style="font-size:28px; color:#4A9FB5;">${letra.may}</span> <span style="font-size:18px; color:#17B8CE;">${letra.min}</span>
-              </div>
-              <div style="flex:1; cursor:pointer; user-select:none; font-size:16px;" class="hablar" data-hablar="${letra.palabra}">
-                ${letra.palabra}
-              </div>
-              <div style="width:30px; text-align:center; font-weight:600; font-size:14px; color:#666;">
-                ${letra.representa}
-              </div>
-            </div>
-          `;
+          html += `<div style="display:flex; align-items:center; padding:6px 8px; border-bottom:1px solid #eee; gap:20px;"><div style="width:60px; text-align:center; cursor:pointer; user-select:none; font-weight:700;" class="hablar" data-hablar="${letra.min}"><span style="font-size:24px; color:#4A9FB5;">${letra.may}</span> <span style="font-size:14px; color:#17B8CE;">${letra.min}</span></div><div style="width:60px; text-align:center; cursor:pointer; user-select:none; font-size:14px;" class="hablar" data-hablar="${letra.palabra}">${letra.palabra}</div><div style="width:60px; text-align:center; font-weight:600; font-size:12px; color:#666;">${letra.representa}</div></div>`;
         });
-        
         html += `</div>`;
         div.innerHTML = html;
-        
         return div;
       }
     },
@@ -749,7 +766,7 @@ const CONTENIDO_TARJETAS = {
         diacriticos.forEach((d, idx) => {
           html += `
             <div style="display:flex; align-items:center; padding:6px 8px; border-bottom:1px solid #eee; gap:30px;">
-              <div style="width:50px; text-align:center; cursor:pointer; user-select:none; font-weight:700;" class="hablar" data-hablar="${d.min}">
+              <div style="width:60px; text-align:center; cursor:pointer; user-select:none; font-weight:700;" class="hablar" data-hablar="${d.min}">
                 <span style="font-size:28px; color:#4A9FB5;">${d.car}</span> <span style="font-size:18px; color:#17B8CE;">${d.min}</span>
               </div>
               <div style="flex:1; cursor:pointer; user-select:none; font-size:14px; color:#555;" class="hablar" data-hablar="${d.palabra}">
@@ -769,7 +786,56 @@ const CONTENIDO_TARJETAS = {
       }
     }
   ],
-  'CULTURA': [],
+  'CULTURA': {
+    'pais': [
+      {
+        id: 'tarjeta-pais',
+        titulo: 'País',
+        tipo: 'pais',
+        render: function() {
+          const div = document.createElement('div');
+          div.className = 'tarjeta';
+          div.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #4A9FB5, #B5D9E8) border-box`;
+          div.style.border = `var(--card-border-w) solid transparent`;
+          div.style.borderRadius = `var(--card-radius)`;
+          
+          const contenido = [
+            { col1: 'Capital', col2: 'Madrid', col3: 'España' },
+            { col1: 'Población', col2: '47.6M', col3: 'Habitantes' },
+            { col1: 'Idioma', col2: 'Español', col3: 'Oficial' },
+            { col1: 'Moneda', col2: 'Euro', col3: '€' },
+            { col1: 'Continente', col2: 'Europa', col3: 'UE' }
+          ];
+          
+          let html = `
+            <div class="tarjeta-titulo">País</div>
+            <div class="tarjeta-cuerpo" style="padding:0;">
+          `;
+          
+          contenido.forEach((item, idx) => {
+            html += `
+              <div style="display:flex; align-items:center; padding:6px 8px; border-bottom:1px solid #eee; gap:20px;">
+                <div style="width:60px; text-align:center; cursor:pointer; user-select:none; font-weight:700;" class="hablar" data-hablar="${item.col1}">
+                  <span style="font-size:14px; color:#4A9FB5;">${item.col1}</span>
+                </div>
+                <div style="width:60px; text-align:center; cursor:pointer; user-select:none; font-size:14px;" class="hablar" data-hablar="${item.col2}">
+                  ${item.col2}
+                </div>
+                <div style="width:60px; text-align:center; font-weight:600; font-size:12px; color:#666;">
+                  ${item.col3}
+                </div>
+              </div>
+            `;
+          });
+          
+          html += `</div>`;
+          div.innerHTML = html;
+          return div;
+        }
+      }
+    ],
+    'gastronomia': []
+  },
   'GEOGRAFÍA Y CLIMA': [],
   'NÚMEROS Y TIEMPO': [],
   'MODOS Y FRASES': [],
@@ -1077,6 +1143,11 @@ function elegirUnidad(key, nombre, tipo) {
   const selTema = document.getElementById('selTema');
   const selSubtema = document.getElementById('selSubtema');
   
+  // Limpiar estilos inline de selectores
+  selUnidad.style.background = '';
+  selTema.style.background = '';
+  selSubtema.style.background = '';
+  
   // Remover todas las clases especiales primero
   selUnidad.classList.remove('verbos', 'abecedario', 'colores');
   selTema.classList.remove('verbos', 'abecedario', 'colores');
@@ -1144,23 +1215,73 @@ function elegirTema(key, nombre) {
 
   // Cambiar clase del body para actualizar fondo
   document.body.className = '';
+  
+  const selTema = document.getElementById('selTema');
+  const selUnidad = document.getElementById('selUnidad');
+  
   if (estado.unidad === 'CASOS') {
     document.body.classList.add(`tema-${key}`);
+    
+    // Aplicar gradiente de color al selector según el CASO
+    const casosColores = {
+      'caso1': { color1: '#E63946', color2: '#F7B8BE' },
+      'caso2': { color1: '#6B6B63', color2: '#D0CFC5' },
+      'caso3': { color1: '#8557D4', color2: '#D4C4F0' },
+      'caso4': { color1: '#1B4D3E', color2: '#7FB3A0' },
+      'caso5': { color1: '#B8860B', color2: '#F0E68C' },
+      'caso6': { color1: '#4A9FB5', color2: '#B5D9E8' }
+    };
+    
+    if (casosColores[key]) {
+      const c = casosColores[key];
+      const gradiente = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, ${c.color1}, ${c.color2}) border-box`;
+      selTema.style.background = gradiente;
+      selUnidad.style.background = gradiente; // Cambiar también el botón de UNIDAD
+    }
+    
+    // Activar partículas del CASO correspondiente
+    Object.entries(particleSystemsCASOS).forEach(([casoKey, ps]) => {
+      if (casoKey === key) {
+        ps.start();
+      } else {
+        ps.stop();
+      }
+    });
   } else if (estado.unidad === 'ABECEDARIO') {
     document.body.classList.add('tema-letras');
+    selTema.style.background = '';
+    selUnidad.style.background = '';
+  } else if (estado.unidad === 'CULTURA') {
+    document.body.classList.add(`tema-cultura-${key}`);
+    
+    // Aplicar gradiente al botón de tema
+    const coloresCultura = {
+      'pais': { color1: '#4A9FB5', color2: '#B5D9E8' },
+      'gastronomia': { color1: '#8B7B6F', color2: '#D9CFC4' }
+    };
+    
+    if (coloresCultura[key]) {
+      const c = coloresCultura[key];
+      const gradiente = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, ${c.color1}, ${c.color2}) border-box`;
+      selTema.style.background = gradiente;
+      selUnidad.style.background = gradiente;
+    }
+    
+    // Activar partículas del tema de CULTURA
+    Object.entries(particleSystemsCULTURA).forEach(([temaKey, ps]) => {
+      if (temaKey === key) {
+        ps.start();
+      } else {
+        ps.stop();
+      }
+    });
   } else if (estado.unidad === 'NÚMEROS Y TIEMPO') {
     document.body.classList.add(`tema-${key}`);
-  }
-
-  // Agregar clase verbos a selTema si es unidad VERBOS
-  const selTema = document.getElementById('selTema');
-  const selSubtema = document.getElementById('selSubtema');
-  if (estado.unidad === 'VERBOS') {
-    selTema.classList.add('verbos');
-    selSubtema.classList.add('verbos');
+    selTema.style.background = '';
+    selUnidad.style.background = '';
   } else {
-    selTema.classList.remove('verbos');
-    selSubtema.classList.remove('verbos');
+    selTema.style.background = '';
+    selUnidad.style.background = '';
   }
 
   // Sub-temas del tema elegido
@@ -1377,6 +1498,20 @@ function aplicarColorFondoCaso() {
   aplicarColorFondo();
 }
 
+// ── COLORES ESTÁNDAR PARA TIEMPOS VERBALES (UNIDAD VERBOS) ─────────────────
+// Cada posición = un tiempo verbal = un color específico
+// Esto se aplica a CUALQUIER idioma, independiente de conjugaciones
+const COLORES_TIEMPOS_VERBOS = [
+  { color1: '#E63946', color2: '#F7B8BE' },  // Posición 0: Rojo (ej: PLUSCUAMPERFECTO)
+  { color1: '#F0932F', color2: '#F9D4B8' },  // Posición 1: Naranja (ej: PASADO COMPUESTO)
+  { color1: '#FFC93C', color2: '#FFE9A8' },  // Posición 2: Amarillo (ej: IMPERFECTO)
+  { color1: '#FF4D9F', color2: '#FFB8D9' },  // Posición 3: Fuxia (ej: PASADO CONDICIONAL)
+  { color1: '#2A2A2A', color2: '#B8B8B8' },  // Posición 4: Negro (ej: PRESENTE)
+  { color1: '#6FCF3D', color2: '#C5EBA8' },  // Posición 5: Verde Claro (ej: FUTURO PRÓXIMO)
+  { color1: '#17B8CE', color2: '#A8E8F0' },  // Posición 6: Turquesa (ej: FUTURO SIMPLE)
+  { color1: '#8557D4', color2: '#D4C4F0' }   // Posición 7: Violeta (ej: CONDICIONAL)
+];
+
 // ── CONJUGACIONES DE VERBOS (ESPAÑOL) ──────────────────────────────────
 // Estructura: cada verbo tiene los 8 tiempos con sus conjugaciones
 // IMPORTANTE: cuando se agregue otro idioma, crear este objeto en ese idioma
@@ -1385,7 +1520,7 @@ const CONJUGACIONES_VERBOS = {
     infinitivo: 'comer',
     participio: 'comido',
     tiempos: [
-      { titulo: 'PLUSCUAMPERFECTO', color1: '#E63946', color2: '#F7B8BE', ejemplo: 'yo había comido', conjugaciones: [
+      { titulo: 'PLUSCUAMPERFECTO', ejemplo: 'yo había comido', conjugaciones: [
         {persona: 'yo', forma: 'había comido'},
         {persona: 'tú', forma: 'habías comido'},
         {persona: 'él/ella', forma: 'había comido'},
@@ -1393,7 +1528,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habíais comido'},
         {persona: 'ellos/ellas', forma: 'habían comido'}
       ]},
-      { titulo: 'PASADO COMPUESTO', color1: '#F0932F', color2: '#F9D4B8', ejemplo: 'yo he comido', conjugaciones: [
+      { titulo: 'PASADO COMPUESTO', ejemplo: 'yo he comido', conjugaciones: [
         {persona: 'yo', forma: 'he comido'},
         {persona: 'tú', forma: 'has comido'},
         {persona: 'él/ella', forma: 'ha comido'},
@@ -1401,7 +1536,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habéis comido'},
         {persona: 'ellos/ellas', forma: 'han comido'}
       ]},
-      { titulo: 'IMPERFECTO', color1: '#FFC93C', color2: '#FFE9A8', ejemplo: 'yo comía', conjugaciones: [
+      { titulo: 'IMPERFECTO', ejemplo: 'yo comía', conjugaciones: [
         {persona: 'yo', forma: 'comía'},
         {persona: 'tú', forma: 'comías'},
         {persona: 'él/ella', forma: 'comía'},
@@ -1409,7 +1544,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'comíais'},
         {persona: 'ellos/ellas', forma: 'comían'}
       ]},
-      { titulo: 'PASADO CONDICIONAL', color1: '#FF4D9F', color2: '#FFB8D9', ejemplo: 'yo habría comido', conjugaciones: [
+      { titulo: 'PASADO CONDICIONAL', ejemplo: 'yo habría comido', conjugaciones: [
         {persona: 'yo', forma: 'habría comido'},
         {persona: 'tú', forma: 'habrías comido'},
         {persona: 'él/ella', forma: 'habría comido'},
@@ -1417,7 +1552,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habríais comido'},
         {persona: 'ellos/ellas', forma: 'habrían comido'}
       ]},
-      { titulo: 'PRESENTE', color1: '#2A2A2A', color2: '#B8B8B8', ejemplo: 'yo como', conjugaciones: [
+      { titulo: 'PRESENTE', ejemplo: 'yo como', conjugaciones: [
         {persona: 'yo', forma: 'como'},
         {persona: 'tú', forma: 'comes'},
         {persona: 'él/ella', forma: 'come'},
@@ -1425,7 +1560,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'coméis'},
         {persona: 'ellos/ellas', forma: 'comen'}
       ]},
-      { titulo: 'FUTURO PRÓXIMO', color1: '#6FCF3D', color2: '#C5EBA8', ejemplo: 'yo voy a comer', conjugaciones: [
+      { titulo: 'FUTURO PRÓXIMO', ejemplo: 'yo voy a comer', conjugaciones: [
         {persona: 'yo', forma: 'voy a comer'},
         {persona: 'tú', forma: 'vas a comer'},
         {persona: 'él/ella', forma: 'va a comer'},
@@ -1433,7 +1568,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'vais a comer'},
         {persona: 'ellos/ellas', forma: 'van a comer'}
       ]},
-      { titulo: 'FUTURO SIMPLE', color1: '#17B8CE', color2: '#A8E8F0', ejemplo: 'yo comeré', conjugaciones: [
+      { titulo: 'FUTURO SIMPLE', ejemplo: 'yo comeré', conjugaciones: [
         {persona: 'yo', forma: 'comeré'},
         {persona: 'tú', forma: 'comerás'},
         {persona: 'él/ella', forma: 'comerá'},
@@ -1441,7 +1576,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'comeréis'},
         {persona: 'ellos/ellas', forma: 'comerán'}
       ]},
-      { titulo: 'CONDICIONAL', color1: '#8557D4', color2: '#D4C4F0', ejemplo: 'yo comería', conjugaciones: [
+      { titulo: 'CONDICIONAL', ejemplo: 'yo comería', conjugaciones: [
         {persona: 'yo', forma: 'comería'},
         {persona: 'tú', forma: 'comerías'},
         {persona: 'él/ella', forma: 'comería'},
@@ -1455,7 +1590,7 @@ const CONJUGACIONES_VERBOS = {
     infinitivo: 'hablar',
     participio: 'hablado',
     tiempos: [
-      { titulo: 'PLUSCUAMPERFECTO', color1: '#d63b2f', color2: '#c02a20', ejemplo: 'yo había hablado', conjugaciones: [
+      { titulo: 'PLUSCUAMPERFECTO', ejemplo: 'yo había hablado', conjugaciones: [
         {persona: 'yo', forma: 'había hablado'},
         {persona: 'tú', forma: 'habías hablado'},
         {persona: 'él/ella', forma: 'había hablado'},
@@ -1463,7 +1598,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habíais hablado'},
         {persona: 'ellos/ellas', forma: 'habían hablado'}
       ]},
-      { titulo: 'PASADO COMPUESTO', color1: '#e8821e', color2: '#c86a10', ejemplo: 'yo he hablado', conjugaciones: [
+      { titulo: 'PASADO COMPUESTO', ejemplo: 'yo he hablado', conjugaciones: [
         {persona: 'yo', forma: 'he hablado'},
         {persona: 'tú', forma: 'has hablado'},
         {persona: 'él/ella', forma: 'ha hablado'},
@@ -1471,7 +1606,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habéis hablado'},
         {persona: 'ellos/ellas', forma: 'han hablado'}
       ]},
-      { titulo: 'IMPERFECTO', color1: '#e8c91e', color2: '#c8a810', ejemplo: 'yo hablaba', conjugaciones: [
+      { titulo: 'IMPERFECTO', ejemplo: 'yo hablaba', conjugaciones: [
         {persona: 'yo', forma: 'hablaba'},
         {persona: 'tú', forma: 'hablabas'},
         {persona: 'él/ella', forma: 'hablaba'},
@@ -1479,7 +1614,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'hablabais'},
         {persona: 'ellos/ellas', forma: 'hablaban'}
       ]},
-      { titulo: 'PASADO CONDICIONAL', color1: '#e85ca8', color2: '#c84090', ejemplo: 'yo habría hablado', conjugaciones: [
+      { titulo: 'PASADO CONDICIONAL', ejemplo: 'yo habría hablado', conjugaciones: [
         {persona: 'yo', forma: 'habría hablado'},
         {persona: 'tú', forma: 'habrías hablado'},
         {persona: 'él/ella', forma: 'habría hablado'},
@@ -1487,7 +1622,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habríais hablado'},
         {persona: 'ellos/ellas', forma: 'habrían hablado'}
       ]},
-      { titulo: 'PRESENTE', color1: '#3a3a3a', color2: '#1a1a1a', ejemplo: 'yo hablo', conjugaciones: [
+      { titulo: 'PRESENTE', ejemplo: 'yo hablo', conjugaciones: [
         {persona: 'yo', forma: 'hablo'},
         {persona: 'tú', forma: 'hablas'},
         {persona: 'él/ella', forma: 'habla'},
@@ -1495,7 +1630,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habláis'},
         {persona: 'ellos/ellas', forma: 'hablan'}
       ]},
-      { titulo: 'FUTURO PRÓXIMO', color1: '#4caf3a', color2: '#2a8f20', ejemplo: 'yo voy a hablar', conjugaciones: [
+      { titulo: 'FUTURO PRÓXIMO', ejemplo: 'yo voy a hablar', conjugaciones: [
         {persona: 'yo', forma: 'voy a hablar'},
         {persona: 'tú', forma: 'vas a hablar'},
         {persona: 'él/ella', forma: 'va a hablar'},
@@ -1503,7 +1638,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'vais a hablar'},
         {persona: 'ellos/ellas', forma: 'van a hablar'}
       ]},
-      { titulo: 'FUTURO SIMPLE', color1: '#2f7fe0', color2: '#1060c0', ejemplo: 'yo hablaré', conjugaciones: [
+      { titulo: 'FUTURO SIMPLE', ejemplo: 'yo hablaré', conjugaciones: [
         {persona: 'yo', forma: 'hablaré'},
         {persona: 'tú', forma: 'hablarás'},
         {persona: 'él/ella', forma: 'hablará'},
@@ -1511,7 +1646,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'hablaréis'},
         {persona: 'ellos/ellas', forma: 'hablarán'}
       ]},
-      { titulo: 'CONDICIONAL', color1: '#7b3fd6', color2: '#5a20b0', ejemplo: 'yo hablaría', conjugaciones: [
+      { titulo: 'CONDICIONAL', ejemplo: 'yo hablaría', conjugaciones: [
         {persona: 'yo', forma: 'hablaría'},
         {persona: 'tú', forma: 'hablarías'},
         {persona: 'él/ella', forma: 'hablaría'},
@@ -1525,7 +1660,7 @@ const CONJUGACIONES_VERBOS = {
     infinitivo: 'vivir',
     participio: 'vivido',
     tiempos: [
-      { titulo: 'PLUSCUAMPERFECTO', color1: '#d63b2f', color2: '#c02a20', ejemplo: 'yo había vivido', conjugaciones: [
+      { titulo: 'PLUSCUAMPERFECTO', ejemplo: 'yo había vivido', conjugaciones: [
         {persona: 'yo', forma: 'había vivido'},
         {persona: 'tú', forma: 'habías vivido'},
         {persona: 'él/ella', forma: 'había vivido'},
@@ -1533,7 +1668,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habíais vivido'},
         {persona: 'ellos/ellas', forma: 'habían vivido'}
       ]},
-      { titulo: 'PASADO COMPUESTO', color1: '#e8821e', color2: '#c86a10', ejemplo: 'yo he vivido', conjugaciones: [
+      { titulo: 'PASADO COMPUESTO', ejemplo: 'yo he vivido', conjugaciones: [
         {persona: 'yo', forma: 'he vivido'},
         {persona: 'tú', forma: 'has vivido'},
         {persona: 'él/ella', forma: 'ha vivido'},
@@ -1541,7 +1676,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habéis vivido'},
         {persona: 'ellos/ellas', forma: 'han vivido'}
       ]},
-      { titulo: 'IMPERFECTO', color1: '#e8c91e', color2: '#c8a810', ejemplo: 'yo vivía', conjugaciones: [
+      { titulo: 'IMPERFECTO', ejemplo: 'yo vivía', conjugaciones: [
         {persona: 'yo', forma: 'vivía'},
         {persona: 'tú', forma: 'vivías'},
         {persona: 'él/ella', forma: 'vivía'},
@@ -1549,7 +1684,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'vivíais'},
         {persona: 'ellos/ellas', forma: 'vivían'}
       ]},
-      { titulo: 'PASADO CONDICIONAL', color1: '#e85ca8', color2: '#c84090', ejemplo: 'yo habría vivido', conjugaciones: [
+      { titulo: 'PASADO CONDICIONAL', ejemplo: 'yo habría vivido', conjugaciones: [
         {persona: 'yo', forma: 'habría vivido'},
         {persona: 'tú', forma: 'habrías vivido'},
         {persona: 'él/ella', forma: 'habría vivido'},
@@ -1557,7 +1692,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habríais vivido'},
         {persona: 'ellos/ellas', forma: 'habrían vivido'}
       ]},
-      { titulo: 'PRESENTE', color1: '#3a3a3a', color2: '#1a1a1a', ejemplo: 'yo vivo', conjugaciones: [
+      { titulo: 'PRESENTE', ejemplo: 'yo vivo', conjugaciones: [
         {persona: 'yo', forma: 'vivo'},
         {persona: 'tú', forma: 'vives'},
         {persona: 'él/ella', forma: 'vive'},
@@ -1565,7 +1700,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'vivís'},
         {persona: 'ellos/ellas', forma: 'viven'}
       ]},
-      { titulo: 'FUTURO PRÓXIMO', color1: '#4caf3a', color2: '#2a8f20', ejemplo: 'yo voy a vivir', conjugaciones: [
+      { titulo: 'FUTURO PRÓXIMO', ejemplo: 'yo voy a vivir', conjugaciones: [
         {persona: 'yo', forma: 'voy a vivir'},
         {persona: 'tú', forma: 'vas a vivir'},
         {persona: 'él/ella', forma: 'va a vivir'},
@@ -1573,7 +1708,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'vais a vivir'},
         {persona: 'ellos/ellas', forma: 'van a vivir'}
       ]},
-      { titulo: 'FUTURO SIMPLE', color1: '#2f7fe0', color2: '#1060c0', ejemplo: 'yo viviré', conjugaciones: [
+      { titulo: 'FUTURO SIMPLE', ejemplo: 'yo viviré', conjugaciones: [
         {persona: 'yo', forma: 'viviré'},
         {persona: 'tú', forma: 'vivirás'},
         {persona: 'él/ella', forma: 'vivirá'},
@@ -1581,7 +1716,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'viviréis'},
         {persona: 'ellos/ellas', forma: 'vivirán'}
       ]},
-      { titulo: 'CONDICIONAL', color1: '#7b3fd6', color2: '#5a20b0', ejemplo: 'yo viviría', conjugaciones: [
+      { titulo: 'CONDICIONAL', ejemplo: 'yo viviría', conjugaciones: [
         {persona: 'yo', forma: 'viviría'},
         {persona: 'tú', forma: 'vivirías'},
         {persona: 'él/ella', forma: 'viviría'},
@@ -1595,7 +1730,7 @@ const CONJUGACIONES_VERBOS = {
     infinitivo: 'ser',
     participio: 'sido',
     tiempos: [
-      { titulo: 'PLUSCUAMPERFECTO', color1: '#d63b2f', color2: '#c02a20', ejemplo: 'yo había sido', conjugaciones: [
+      { titulo: 'PLUSCUAMPERFECTO', ejemplo: 'yo había sido', conjugaciones: [
         {persona: 'yo', forma: 'había sido'},
         {persona: 'tú', forma: 'habías sido'},
         {persona: 'él/ella', forma: 'había sido'},
@@ -1603,7 +1738,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habíais sido'},
         {persona: 'ellos/ellas', forma: 'habían sido'}
       ]},
-      { titulo: 'PASADO COMPUESTO', color1: '#e8821e', color2: '#c86a10', ejemplo: 'yo he sido', conjugaciones: [
+      { titulo: 'PASADO COMPUESTO', ejemplo: 'yo he sido', conjugaciones: [
         {persona: 'yo', forma: 'he sido'},
         {persona: 'tú', forma: 'has sido'},
         {persona: 'él/ella', forma: 'ha sido'},
@@ -1611,7 +1746,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habéis sido'},
         {persona: 'ellos/ellas', forma: 'han sido'}
       ]},
-      { titulo: 'IMPERFECTO', color1: '#e8c91e', color2: '#c8a810', ejemplo: 'yo era', conjugaciones: [
+      { titulo: 'IMPERFECTO', ejemplo: 'yo era', conjugaciones: [
         {persona: 'yo', forma: 'era'},
         {persona: 'tú', forma: 'eras'},
         {persona: 'él/ella', forma: 'era'},
@@ -1619,7 +1754,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'erais'},
         {persona: 'ellos/ellas', forma: 'eran'}
       ]},
-      { titulo: 'PASADO CONDICIONAL', color1: '#e85ca8', color2: '#c84090', ejemplo: 'yo habría sido', conjugaciones: [
+      { titulo: 'PASADO CONDICIONAL', ejemplo: 'yo habría sido', conjugaciones: [
         {persona: 'yo', forma: 'habría sido'},
         {persona: 'tú', forma: 'habrías sido'},
         {persona: 'él/ella', forma: 'habría sido'},
@@ -1627,7 +1762,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habríais sido'},
         {persona: 'ellos/ellas', forma: 'habrían sido'}
       ]},
-      { titulo: 'PRESENTE', color1: '#3a3a3a', color2: '#1a1a1a', ejemplo: 'yo soy', conjugaciones: [
+      { titulo: 'PRESENTE', ejemplo: 'yo soy', conjugaciones: [
         {persona: 'yo', forma: 'soy'},
         {persona: 'tú', forma: 'eres'},
         {persona: 'él/ella', forma: 'es'},
@@ -1635,7 +1770,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'sois'},
         {persona: 'ellos/ellas', forma: 'son'}
       ]},
-      { titulo: 'FUTURO PRÓXIMO', color1: '#4caf3a', color2: '#2a8f20', ejemplo: 'yo voy a ser', conjugaciones: [
+      { titulo: 'FUTURO PRÓXIMO', ejemplo: 'yo voy a ser', conjugaciones: [
         {persona: 'yo', forma: 'voy a ser'},
         {persona: 'tú', forma: 'vas a ser'},
         {persona: 'él/ella', forma: 'va a ser'},
@@ -1643,7 +1778,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'vais a ser'},
         {persona: 'ellos/ellas', forma: 'van a ser'}
       ]},
-      { titulo: 'FUTURO SIMPLE', color1: '#2f7fe0', color2: '#1060c0', ejemplo: 'yo seré', conjugaciones: [
+      { titulo: 'FUTURO SIMPLE', ejemplo: 'yo seré', conjugaciones: [
         {persona: 'yo', forma: 'seré'},
         {persona: 'tú', forma: 'serás'},
         {persona: 'él/ella', forma: 'será'},
@@ -1651,7 +1786,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'seréis'},
         {persona: 'ellos/ellas', forma: 'serán'}
       ]},
-      { titulo: 'CONDICIONAL', color1: '#7b3fd6', color2: '#5a20b0', ejemplo: 'yo sería', conjugaciones: [
+      { titulo: 'CONDICIONAL', ejemplo: 'yo sería', conjugaciones: [
         {persona: 'yo', forma: 'sería'},
         {persona: 'tú', forma: 'serías'},
         {persona: 'él/ella', forma: 'sería'},
@@ -1665,7 +1800,7 @@ const CONJUGACIONES_VERBOS = {
     infinitivo: 'ir',
     participio: 'ido',
     tiempos: [
-      { titulo: 'PLUSCUAMPERFECTO', color1: '#d63b2f', color2: '#c02a20', ejemplo: 'yo había ido', conjugaciones: [
+      { titulo: 'PLUSCUAMPERFECTO', ejemplo: 'yo había ido', conjugaciones: [
         {persona: 'yo', forma: 'había ido'},
         {persona: 'tú', forma: 'habías ido'},
         {persona: 'él/ella', forma: 'había ido'},
@@ -1673,7 +1808,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habíais ido'},
         {persona: 'ellos/ellas', forma: 'habían ido'}
       ]},
-      { titulo: 'PASADO COMPUESTO', color1: '#e8821e', color2: '#c86a10', ejemplo: 'yo he ido', conjugaciones: [
+      { titulo: 'PASADO COMPUESTO', ejemplo: 'yo he ido', conjugaciones: [
         {persona: 'yo', forma: 'he ido'},
         {persona: 'tú', forma: 'has ido'},
         {persona: 'él/ella', forma: 'ha ido'},
@@ -1681,7 +1816,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habéis ido'},
         {persona: 'ellos/ellas', forma: 'han ido'}
       ]},
-      { titulo: 'IMPERFECTO', color1: '#e8c91e', color2: '#c8a810', ejemplo: 'yo iba', conjugaciones: [
+      { titulo: 'IMPERFECTO', ejemplo: 'yo iba', conjugaciones: [
         {persona: 'yo', forma: 'iba'},
         {persona: 'tú', forma: 'ibas'},
         {persona: 'él/ella', forma: 'iba'},
@@ -1689,7 +1824,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'ibais'},
         {persona: 'ellos/ellas', forma: 'iban'}
       ]},
-      { titulo: 'PASADO CONDICIONAL', color1: '#e85ca8', color2: '#c84090', ejemplo: 'yo habría ido', conjugaciones: [
+      { titulo: 'PASADO CONDICIONAL', ejemplo: 'yo habría ido', conjugaciones: [
         {persona: 'yo', forma: 'habría ido'},
         {persona: 'tú', forma: 'habrías ido'},
         {persona: 'él/ella', forma: 'habría ido'},
@@ -1697,7 +1832,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habríais ido'},
         {persona: 'ellos/ellas', forma: 'habrían ido'}
       ]},
-      { titulo: 'PRESENTE', color1: '#3a3a3a', color2: '#1a1a1a', ejemplo: 'yo voy', conjugaciones: [
+      { titulo: 'PRESENTE', ejemplo: 'yo voy', conjugaciones: [
         {persona: 'yo', forma: 'voy'},
         {persona: 'tú', forma: 'vas'},
         {persona: 'él/ella', forma: 'va'},
@@ -1705,7 +1840,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'vais'},
         {persona: 'ellos/ellas', forma: 'van'}
       ]},
-      { titulo: 'FUTURO PRÓXIMO', color1: '#4caf3a', color2: '#2a8f20', ejemplo: 'yo voy a ir', conjugaciones: [
+      { titulo: 'FUTURO PRÓXIMO', ejemplo: 'yo voy a ir', conjugaciones: [
         {persona: 'yo', forma: 'voy a ir'},
         {persona: 'tú', forma: 'vas a ir'},
         {persona: 'él/ella', forma: 'va a ir'},
@@ -1713,7 +1848,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'vais a ir'},
         {persona: 'ellos/ellas', forma: 'van a ir'}
       ]},
-      { titulo: 'FUTURO SIMPLE', color1: '#2f7fe0', color2: '#1060c0', ejemplo: 'yo iré', conjugaciones: [
+      { titulo: 'FUTURO SIMPLE', ejemplo: 'yo iré', conjugaciones: [
         {persona: 'yo', forma: 'iré'},
         {persona: 'tú', forma: 'irás'},
         {persona: 'él/ella', forma: 'irá'},
@@ -1721,7 +1856,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'iréis'},
         {persona: 'ellos/ellas', forma: 'irán'}
       ]},
-      { titulo: 'CONDICIONAL', color1: '#7b3fd6', color2: '#5a20b0', ejemplo: 'yo iría', conjugaciones: [
+      { titulo: 'CONDICIONAL', ejemplo: 'yo iría', conjugaciones: [
         {persona: 'yo', forma: 'iría'},
         {persona: 'tú', forma: 'irías'},
         {persona: 'él/ella', forma: 'iría'},
@@ -1735,7 +1870,7 @@ const CONJUGACIONES_VERBOS = {
     infinitivo: 'hacer',
     participio: 'hecho',
     tiempos: [
-      { titulo: 'PLUSCUAMPERFECTO', color1: '#d63b2f', color2: '#c02a20', ejemplo: 'yo había hecho', conjugaciones: [
+      { titulo: 'PLUSCUAMPERFECTO', ejemplo: 'yo había hecho', conjugaciones: [
         {persona: 'yo', forma: 'había hecho'},
         {persona: 'tú', forma: 'habías hecho'},
         {persona: 'él/ella', forma: 'había hecho'},
@@ -1743,7 +1878,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habíais hecho'},
         {persona: 'ellos/ellas', forma: 'habían hecho'}
       ]},
-      { titulo: 'PASADO COMPUESTO', color1: '#e8821e', color2: '#c86a10', ejemplo: 'yo he hecho', conjugaciones: [
+      { titulo: 'PASADO COMPUESTO', ejemplo: 'yo he hecho', conjugaciones: [
         {persona: 'yo', forma: 'he hecho'},
         {persona: 'tú', forma: 'has hecho'},
         {persona: 'él/ella', forma: 'ha hecho'},
@@ -1751,7 +1886,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habéis hecho'},
         {persona: 'ellos/ellas', forma: 'han hecho'}
       ]},
-      { titulo: 'IMPERFECTO', color1: '#e8c91e', color2: '#c8a810', ejemplo: 'yo hacía', conjugaciones: [
+      { titulo: 'IMPERFECTO', ejemplo: 'yo hacía', conjugaciones: [
         {persona: 'yo', forma: 'hacía'},
         {persona: 'tú', forma: 'hacías'},
         {persona: 'él/ella', forma: 'hacía'},
@@ -1759,7 +1894,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'hacíais'},
         {persona: 'ellos/ellas', forma: 'hacían'}
       ]},
-      { titulo: 'PASADO CONDICIONAL', color1: '#e85ca8', color2: '#c84090', ejemplo: 'yo habría hecho', conjugaciones: [
+      { titulo: 'PASADO CONDICIONAL', ejemplo: 'yo habría hecho', conjugaciones: [
         {persona: 'yo', forma: 'habría hecho'},
         {persona: 'tú', forma: 'habrías hecho'},
         {persona: 'él/ella', forma: 'habría hecho'},
@@ -1767,7 +1902,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'habríais hecho'},
         {persona: 'ellos/ellas', forma: 'habrían hecho'}
       ]},
-      { titulo: 'PRESENTE', color1: '#3a3a3a', color2: '#1a1a1a', ejemplo: 'yo hago', conjugaciones: [
+      { titulo: 'PRESENTE', ejemplo: 'yo hago', conjugaciones: [
         {persona: 'yo', forma: 'hago'},
         {persona: 'tú', forma: 'haces'},
         {persona: 'él/ella', forma: 'hace'},
@@ -1775,7 +1910,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'hacéis'},
         {persona: 'ellos/ellas', forma: 'hacen'}
       ]},
-      { titulo: 'FUTURO PRÓXIMO', color1: '#4caf3a', color2: '#2a8f20', ejemplo: 'yo voy a hacer', conjugaciones: [
+      { titulo: 'FUTURO PRÓXIMO', ejemplo: 'yo voy a hacer', conjugaciones: [
         {persona: 'yo', forma: 'voy a hacer'},
         {persona: 'tú', forma: 'vas a hacer'},
         {persona: 'él/ella', forma: 'va a hacer'},
@@ -1783,7 +1918,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'vais a hacer'},
         {persona: 'ellos/ellas', forma: 'van a hacer'}
       ]},
-      { titulo: 'FUTURO SIMPLE', color1: '#2f7fe0', color2: '#1060c0', ejemplo: 'yo haré', conjugaciones: [
+      { titulo: 'FUTURO SIMPLE', ejemplo: 'yo haré', conjugaciones: [
         {persona: 'yo', forma: 'haré'},
         {persona: 'tú', forma: 'harás'},
         {persona: 'él/ella', forma: 'hará'},
@@ -1791,7 +1926,7 @@ const CONJUGACIONES_VERBOS = {
         {persona: 'vosotros', forma: 'haréis'},
         {persona: 'ellos/ellas', forma: 'harán'}
       ]},
-      { titulo: 'CONDICIONAL', color1: '#7b3fd6', color2: '#5a20b0', ejemplo: 'yo haría', conjugaciones: [
+      { titulo: 'CONDICIONAL', ejemplo: 'yo haría', conjugaciones: [
         {persona: 'yo', forma: 'haría'},
         {persona: 'tú', forma: 'harías'},
         {persona: 'él/ella', forma: 'haría'},
@@ -1837,10 +1972,13 @@ function renderMesaFija(mesa) {
   // Usar los 8 tiempos del verbo seleccionado
   const items_fija = conjugacionesVerbo.tiempos;
 
-  items_fija.forEach(t => {
+  items_fija.forEach((t, idx) => {
     const card = document.createElement('div');
     card.className = 'tarjeta-fija';
-    card.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, ${t.color1}, ${t.color2}) border-box`;
+    
+    // Obtener color por posición (índice)
+    const colorInfo = COLORES_TIEMPOS_VERBOS[idx];
+    card.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, ${colorInfo.color1}, ${colorInfo.color2}) border-box`;
     card.style.border = `var(--card-border-w) solid transparent`;
     card.style.borderRadius = `var(--card-radius)`;
     
@@ -1849,13 +1987,13 @@ function renderMesaFija(mesa) {
       conjugacionesHTML += `
         <tr style="border-bottom: 1px solid #f0f0f0;">
           <td style="padding: 6px; color: #000; font-weight: 600; width: 40%;">${conj.persona}</td>
-          <td style="padding: 6px; color: ${t.color1}; font-weight: 600;">${conj.forma}</td>
+          <td style="padding: 6px; color: ${colorInfo.color1}; font-weight: 600;">${conj.forma}</td>
         </tr>
       `;
     });
     
     card.innerHTML = `
-      <div class="tarjeta-titulo" style="color: ${t.color1}; text-align: center;">${t.titulo}</div>
+      <div class="tarjeta-titulo" style="color: ${colorInfo.color1}; text-align: center;">${t.titulo}</div>
       <div style="padding: 8px 16px; font-size: 11px; color: #999; text-align: center;">${t.ejemplo}</div>
       <div class="tarjeta-cuerpo">
         <table style="width:100%; border-collapse: collapse; font-size: 12px; line-height: 1.5;">
@@ -1873,8 +2011,16 @@ function renderMesaLibre(mesa) {
   mesa.innerHTML = '';
 
   // Obtener las tarjetas del contenido
-  const clave = estado.unidad; // Para W, la clave es 'W'
-  const tarjetasDisponibles = CONTENIDO_TARJETAS[clave] || [];
+  let tarjetasDisponibles = [];
+  
+  // Si la unidad es CULTURA, buscar las tarjetas del tema específico
+  if (estado.unidad === 'CULTURA' && estado.tema) {
+    const temasTarjetas = CONTENIDO_TARJETAS['CULTURA'][estado.tema];
+    tarjetasDisponibles = temasTarjetas || [];
+  } else {
+    const clave = estado.unidad;
+    tarjetasDisponibles = CONTENIDO_TARJETAS[clave] || [];
+  }
 
   if (tarjetasDisponibles.length === 0) {
     mesa.innerHTML = '<div class="mesa-vacia" style="opacity:0.4">Mesa lista — sin tarjetas para esta unidad</div>';
@@ -2053,6 +2199,641 @@ if (estadoGuardado) {
   }
 }
 
+
+// ── SISTEMA DE PARTÍCULAS DE BURBUJAS ─────────────────────────────────
+class BubbleParticleSystem {
+  constructor(containerId, colors = null) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.init();
+  }
+  init() {
+    if (this.colors) {
+      for (let i = 0; i < 15; i++) {
+        const color = this.colors[i % this.colors.length];
+        this.createParticle(color);
+      }
+    } else {
+      for (let i = 0; i < 10; i++) {
+        const color = i % 2 === 0 ? '#B8E3F0' : '#E8F5FB';
+        this.createParticle(color);
+      }
+      for (let i = 0; i < 5; i++) {
+        this.createParticle('#FAFAFA');
+      }
+    }
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `@keyframes particleFadeInOut { 0% { opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } }`;
+      document.head.appendChild(style);
+    }
+  }
+  createParticle(color) {
+    const particle = { element: document.createElement('div'), color: color };
+    particle.element.style.cssText = `position: fixed; pointer-events: none; width: 20px; height: 20px; border-radius: 50%; border: 2px solid ${color}; background: transparent; box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1), 0 0 8px ${color}; z-index: 0;`;
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const size = Math.random() * 14 + 7;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = size + 'px';
+    particle.element.style.height = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    void particle.element.offsetWidth;
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => { if (!p.element.parentElement) document.body.appendChild(p.element); });
+  }
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => { if (p.element.parentElement) p.element.parentElement.removeChild(p.element); });
+  }
+}
+
+
+// ── SISTEMA DE PARTÍCULAS DE ESTRELLA 4 PUNTAS ────────────────────────
+class StarParticleSystem {
+  constructor(containerId, colors = null) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.init();
+  }
+  init() {
+    if (this.colors) {
+      for (let i = 0; i < 15; i++) {
+        const color = this.colors[i % this.colors.length];
+        this.createParticle(color);
+      }
+    } else {
+      for (let i = 0; i < 10; i++) {
+        const color = i % 2 === 0 ? '#B8E3F0' : '#E8F5FB';
+        this.createParticle(color);
+      }
+      for (let i = 0; i < 5; i++) {
+        this.createParticle('#FAFAFA');
+      }
+    }
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `@keyframes particleFadeInOut { 0% { opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } }`;
+      document.head.appendChild(style);
+    }
+  }
+  createParticle(color) {
+    const particle = { element: document.createElement('div'), color: color };
+    particle.element.style.cssText = `position: fixed; pointer-events: none; width: 20px; height: 20px; background: linear-gradient(45deg, transparent 30%, ${color} 30%, ${color} 70%, transparent 70%), linear-gradient(-45deg, transparent 30%, ${color} 30%, ${color} 70%, transparent 70%), linear-gradient(90deg, transparent 30%, ${color} 30%, ${color} 70%, transparent 70%), linear-gradient(0deg, transparent 30%, ${color} 30%, ${color} 70%, transparent 70%); background-size: 100% 100%; z-index: 0; filter: drop-shadow(0 0 6px ${color});`;
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const size = Math.random() * 14 + 7;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = size + 'px';
+    particle.element.style.height = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    void particle.element.offsetWidth;
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => { if (!p.element.parentElement) document.body.appendChild(p.element); });
+  }
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => { if (p.element.parentElement) p.element.parentElement.removeChild(p.element); });
+  }
+}
+
+
+// ── SISTEMA DE PARTÍCULAS DE CUADRADOS REDONDEADOS ────────────────────
+class RoundedSquareParticleSystem {
+  constructor(containerId, colors = null) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.init();
+  }
+  init() {
+    if (this.colors) {
+      for (let i = 0; i < 15; i++) {
+        const color = this.colors[i % this.colors.length];
+        this.createParticle(color);
+      }
+    } else {
+      for (let i = 0; i < 10; i++) {
+        const color = i % 2 === 0 ? '#B8E3F0' : '#E8F5FB';
+        this.createParticle(color);
+      }
+      for (let i = 0; i < 5; i++) {
+        this.createParticle('#FAFAFA');
+      }
+    }
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `@keyframes particleFadeInOut { 0% { opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } }`;
+      document.head.appendChild(style);
+    }
+  }
+  createParticle(color) {
+    const particle = { element: document.createElement('div'), color: color };
+    particle.element.style.cssText = `position: fixed; pointer-events: none; width: 20px; height: 20px; border-radius: 8px; background: ${color}; box-shadow: 0 0 8px ${color}; z-index: 0;`;
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const size = Math.random() * 14 + 7;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = size + 'px';
+    particle.element.style.height = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    void particle.element.offsetWidth;
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => { if (!p.element.parentElement) document.body.appendChild(p.element); });
+  }
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => { if (p.element.parentElement) p.element.parentElement.removeChild(p.element); });
+  }
+}
+
+// ── SISTEMA DE PARTÍCULAS DE TEXTO (para numerales, símbolos, etc.) ────────
+class TextParticleSystem {
+  constructor(containerId, text = '#', colors = null) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.text = text;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    // Crear 15 partículas total
+    for (let i = 0; i < 15; i++) {
+      const color = this.colors ? this.colors[i % this.colors.length] : '#556B2F';
+      this.createParticle(color);
+    }
+    
+    // Agregar estilos de animación si no existen
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOut {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle(color) {
+    const particle = {
+      element: document.createElement('div'),
+      color: color
+    };
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      font-size: 24px;
+      font-weight: bold;
+      font-style: normal;
+      color: ${color};
+      text-shadow: 0 0 8px ${color};
+    `;
+    
+    particle.element.textContent = this.text;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const duration = Math.random() * 5000 + 10000; // 10-15 segundos
+    const delay = Math.random() * 3000; // Delays variados
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    // NO rotamos texto (# y @) para que no se vea extraño
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+class FeatherHexagonParticleSystem {
+  constructor(containerId, colors = null) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    if (this.colors) {
+      for (let i = 0; i < 15; i++) {
+        const color = this.colors[i % this.colors.length];
+        this.createParticle(color);
+      }
+    } else {
+      for (let i = 0; i < 10; i++) {
+        const color = i % 2 === 0 ? '#B8E3F0' : '#E8F5FB';
+        this.createParticle(color);
+      }
+      for (let i = 0; i < 5; i++) {
+        this.createParticle('#FAFAFA');
+      }
+    }
+    
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOut {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle(color) {
+    const particle = {
+      element: document.createElement('div'),
+      color: color
+    };
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 20px;
+      height: 20px;
+      background: ${color};
+      clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 50% 95%, 18% 100%, 0% 38%);
+      box-shadow: 0 0 8px ${color};
+      z-index: 0;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const size = Math.random() * 14 + 7;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = size + 'px';
+    particle.element.style.height = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+class HexagonParticleSystem {
+  constructor(containerId, colors = null) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    if (this.colors) {
+      for (let i = 0; i < 15; i++) {
+        const color = this.colors[i % this.colors.length];
+        this.createParticle(color);
+      }
+    } else {
+      for (let i = 0; i < 10; i++) {
+        const color = i % 2 === 0 ? '#B8E3F0' : '#E8F5FB';
+        this.createParticle(color);
+      }
+      for (let i = 0; i < 5; i++) {
+        this.createParticle('#FAFAFA');
+      }
+    }
+    
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOut {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle(color) {
+    const particle = {
+      element: document.createElement('div'),
+      color: color
+    };
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: ${color};
+      box-shadow: 0 0 8px ${color};
+      z-index: 0;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const size = Math.random() * 14 + 7;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = size + 'px';
+    particle.element.style.height = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+class FeatherParticleSystem {
+  constructor(containerId, colors = null) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    if (this.colors) {
+      for (let i = 0; i < 15; i++) {
+        const color = this.colors[i % this.colors.length];
+        this.createParticle(color);
+      }
+    } else {
+      for (let i = 0; i < 10; i++) {
+        const color = i % 2 === 0 ? '#B8E3F0' : '#E8F5FB';
+        this.createParticle(color);
+      }
+      for (let i = 0; i < 5; i++) {
+        this.createParticle('#FAFAFA');
+      }
+    }
+    
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOut {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle(color) {
+    const particle = {
+      element: document.createElement('svg'),
+      color: color
+    };
+    
+    particle.element.setAttribute('width', '20');
+    particle.element.setAttribute('height', '20');
+    particle.element.setAttribute('viewBox', '0 0 20 20');
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+    `;
+    
+    // Dibujar pluma simple (elipse vertical)
+    const ellipse = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+    ellipse.setAttribute('cx', '10');
+    ellipse.setAttribute('cy', '10');
+    ellipse.setAttribute('rx', '4');
+    ellipse.setAttribute('ry', '8');
+    ellipse.setAttribute('fill', color);
+    ellipse.setAttribute('opacity', '0.8');
+    
+    particle.element.appendChild(ellipse);
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    particle.element.style.transform = `rotate(${Math.random() * 360}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
 // ── SISTEMA DE PARTÍCULAS ──────────────────────────────────────────────────────
 class ParticleSystem {
   constructor(containerId, colors = null) {
@@ -2124,6 +2905,7 @@ class ParticleSystem {
     const size = Math.random() * 14 + 7; // Reducido 30%: era (20 + 10) ahora (14 + 7)
     const duration = Math.random() * 5000 + 10000; // 10-15 segundos
     const delay = Math.random() * 3000; // Delays variados
+    const rotation = Math.random() * 360;
     
     particle.element.style.left = x + 'px';
     particle.element.style.top = y + 'px';
@@ -2131,7 +2913,8 @@ class ParticleSystem {
     particle.element.style.height = size + 'px';
     particle.element.style.backgroundColor = particle.color;
     particle.element.style.opacity = '0';
-    particle.element.style.animation = 'none'; // Reset animation
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`; // Reset animation
     
     // Trigger reflow para que la animación se reinicie
     void particle.element.offsetWidth;
@@ -2164,19 +2947,62 @@ class ParticleSystem {
 
 // Instanciar sistemas de partículas para cada unidad
 const particleSystemABECEDARIO = new ParticleSystem('mesa'); // Celeste + blancas por defecto
+const particleSystemCULTURA = new ParticleSystem('mesa'); // Mismo que ABECEDARIO - Celeste + blancas
 const particleSystemVERBOS = new ParticleSystem('mesa', ['#FFC93C', '#F0932F', '#E63946', '#FF4D9F', '#8557D4', '#17B8CE', '#6FCF3D']); // 7 colores
+
+// Sistemas de partículas para los 6 CASOS (cada uno con sus colores)
+const particleSystemCASO1 = new ParticleSystem('mesa', ['#E63946', '#F7B8BE']); // Rojo + Rojo claro
+const particleSystemCASO2 = new ParticleSystem('mesa', ['#8B7B6F', '#D9CFC4']);
+const particleSystemCASO3 = new BubbleParticleSystem('mesa', ['#CCB0E3', '#E9DFF1']);
+const particleSystemCASO4 = new RoundedSquareParticleSystem('mesa', ['#556B2F', '#9ACD32']); // Verde musgo + Verde claro
+const particleSystemCASO5 = new StarParticleSystem('mesa', ['#C9A961', '#E8D5B7']);
+const particleSystemCASO6 = new FeatherHexagonParticleSystem('mesa', ['#B8E3F0', '#E8F5FB']);
+
+// Map para acceso fácil a sistemas de CASOS
+const particleSystemCULTURA_pais = new ParticleSystem('mesa'); // Celeste + blancas (mismo que ABECEDARIO)
+const particleSystemCULTURA_gastronomia = new ParticleSystem('mesa'); // Por ahora igual, se puede cambiar
+
+const particleSystemsCULTURA = {
+  'pais': particleSystemCULTURA_pais,
+  'gastronomia': particleSystemCULTURA_gastronomia
+};
+
+const particleSystemsCASOS = {
+  'caso1': particleSystemCASO1,
+  'caso2': particleSystemCASO2,
+  'caso3': particleSystemCASO3,
+  'caso4': particleSystemCASO4,
+  'caso5': particleSystemCASO5,
+  'caso6': particleSystemCASO6
+};
 
 // Escuchar cambios de unidad y controlar partículas
 window.addEventListener('cambioUnidad', (e) => {
   if (e.detail.unidad === 'ABECEDARIO') {
     particleSystemABECEDARIO.start();
     particleSystemVERBOS.stop();
+    Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
+    Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
   } else if (e.detail.unidad === 'VERBOS') {
     particleSystemVERBOS.start();
     particleSystemABECEDARIO.stop();
+    Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
+    Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
+  } else if (e.detail.unidad === 'CASOS') {
+    particleSystemABECEDARIO.stop();
+    particleSystemVERBOS.stop();
+    Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
+    // Se activarán en el evento de cambio de tema
+  } else if (e.detail.unidad === 'CULTURA') {
+    particleSystemABECEDARIO.stop();
+    particleSystemVERBOS.stop();
+    Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
+    // Se activarán en el evento de cambio de tema
   } else {
     particleSystemABECEDARIO.stop();
     particleSystemVERBOS.stop();
+    Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
+    Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
   }
 });
 
