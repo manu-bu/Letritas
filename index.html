@@ -210,14 +210,14 @@ header {
   background:
     linear-gradient(#ffffff, #ffffff) padding-box,
     conic-gradient(
-      #FFC93C,      /* Amarillo */
-      #F0932F,      /* Naranja */
       #E63946,      /* Rojo */
-      #8557D4,      /* Violeta */
-      #1E3A8A,      /* Azul */
-      #B8E3F0,      /* Celeste */
+      #F0932F,      /* Naranja */
+      #FFC93C,      /* Amarillo */
       #6FCF3D,      /* Verde Claro */
-      #FFC93C       /* Amarillo nuevamente para cerrar el círculo */
+      #B8E3F0,      /* Celeste */
+      #8557D4,      /* Violeta */
+      #E89CB8,      /* Rosa */
+      #E63946       /* Rojo nuevamente para cerrar el círculo */
     ) border-box;
   color: #3a3a38;
 }
@@ -477,12 +477,17 @@ body.tema-cultura-pais { background: #B8E3F0 !important; }
 body.tema-cultura-gastronomia { background: #8B7B6F !important; }
 body.tema-verbos { background: #F5F3F0 !important; }
 body.tema-caso1 { background: #5C1E1E !important; }
-body.tema-caso2 { background: #6B6B63 !important; }
-body.tema-caso3 { background: #4A1B6B !important; }
+body.tema-caso2 { background: #515147 !important; }
+body.tema-caso3 { background: #361350 !important; }
 body.tema-caso4 { background: #1B4D3E !important; }
-body.tema-caso5 { background: #B8860B !important; }
-body.tema-caso6 { background: #4A9FB5 !important; }
-body.tema-colores { background: #8B7B6F !important; }
+body.tema-caso5 { background: #8a6208 !important; }
+body.tema-caso6 { background: #2d5f6f !important; }
+body.tema-terreno { background: #C5D5C0 !important; }
+body.tema-flora_fauna { background: #A8B89B !important; }
+body.tema-clima_estaciones { background: #f2fafd !important; }
+body.tema-verano { background: #E0F6FF !important; }
+body.tema-invierno { background: #D1F0FF !important; }
+body.tema-colores { background: #F5F1E8 !important; }
 body.tema-numeros { background: #2A2A2A !important; }
 body.tema-hora { background: #C9A961 !important; }
 body.tema-dias_meses { background: #1E3A8A !important; }
@@ -849,7 +854,7 @@ const CONTENIDO_TARJETAS = {
       render: function() {
         const div = document.createElement('div');
         div.className = 'tarjeta';
-        div.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, conic-gradient(#FFC93C, #F0932F, #E63946, #8557D4, #1E3A8A, #B8E3F0, #6FCF3D, #FFC93C) border-box`;
+        div.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, conic-gradient(#E63946, #F0932F, #FFC93C, #6FCF3D, #B8E3F0, #8557D4, #E89CB8, #E63946) border-box`;
         div.style.border = `var(--card-border-w) solid transparent`;
         div.style.borderRadius = `var(--card-radius)`;
         
@@ -914,7 +919,7 @@ const CONTENIDO_TARJETAS = {
       render: function() {
         const div = document.createElement('div');
         div.className = 'tarjeta';
-        div.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, conic-gradient(#FFC93C, #F0932F, #E63946, #8557D4, #1E3A8A, #B8E3F0, #6FCF3D, #FFC93C) border-box`;
+        div.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, conic-gradient(#E63946, #F0932F, #FFC93C, #6FCF3D, #B8E3F0, #8557D4, #E89CB8, #E63946) border-box`;
         div.style.border = `var(--card-border-w) solid transparent`;
         div.style.borderRadius = `var(--card-radius)`;
         
@@ -976,7 +981,7 @@ const CONTENIDO_TARJETAS = {
       render: function() {
         const div = document.createElement('div');
         div.className = 'tarjeta';
-        div.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, conic-gradient(#FFC93C, #F0932F, #E63946, #8557D4, #1E3A8A, #B8E3F0, #6FCF3D, #FFC93C) border-box`;
+        div.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, conic-gradient(#E63946, #F0932F, #FFC93C, #6FCF3D, #B8E3F0, #8557D4, #E89CB8, #E63946) border-box`;
         div.style.border = `var(--card-border-w) solid transparent`;
         div.style.borderRadius = `var(--card-radius)`;
         
@@ -1247,6 +1252,13 @@ function elegirTema(key, nombre) {
         ps.stop();
       }
     });
+    
+    // Activar plumas opacas si es CASO 6
+    if (key === 'caso6') {
+      particleSystemCASO6_opaque.start();
+    } else {
+      particleSystemCASO6_opaque.stop();
+    }
   } else if (estado.unidad === 'ABECEDARIO') {
     document.body.classList.add('tema-letras');
     selTema.style.background = '';
@@ -1275,6 +1287,81 @@ function elegirTema(key, nombre) {
         ps.stop();
       }
     });
+    
+    // Agregar diamantes blancos si es Gastronomía
+    if (key === 'gastronomia') {
+      particleSystemCULTURA_gastronomia_diamonds.start();
+    } else {
+      particleSystemCULTURA_gastronomia_diamonds.stop();
+    }
+  } else if (estado.unidad === 'GEOGRAFÍA Y CLIMA') {
+    document.body.classList.add(`tema-${key}`);
+    
+    // Colores para Terreno: marrón, piedra, musgo, gris, verde oscuro, blanco
+    if (key === 'terreno') {
+      const gradiente = `linear-gradient(#ffffff, #ffffff) padding-box, conic-gradient(#8B7355, #556B2F, #808080, #1B4D3E, #FFFFFF, #8B7355) border-box`;
+      selTema.style.background = gradiente;
+      selUnidad.style.background = gradiente;
+    } else if (key === 'flora_fauna') {
+      const gradiente = `linear-gradient(#ffffff, #ffffff) padding-box, conic-gradient(#8B7355, #556B2F, #F48FB1, #808080, #1B4D3E, #FFFFFF, #8B7355) border-box`;
+      selTema.style.background = gradiente;
+      selUnidad.style.background = gradiente;
+    } else if (key === 'clima_estaciones') {
+      const gradiente = `linear-gradient(#ffffff, #ffffff) padding-box, conic-gradient(from 0deg, #ffffff 0deg, #b0b0ae 75deg, #8ec6e0 190deg, #f0d878 280deg, #f0a8c0 320deg, #ffffff 360deg) border-box`;
+      selTema.style.background = gradiente;
+      selUnidad.style.background = gradiente;
+    } else if (key === 'actividades') {
+      const gradiente = `linear-gradient(#ffffff, #ffffff) padding-box, conic-gradient(from 0deg, #f2994a 0deg, #d6409f 130deg, #8b5cf6 250deg, #4fd1d9 320deg, #f2994a 360deg) border-box`;
+      selTema.style.background = gradiente;
+      selUnidad.style.background = gradiente;
+    } else if (key === 'verano') {
+      const gradiente = `linear-gradient(#ffffff, #ffffff) padding-box, conic-gradient(from 0deg, #f2994a 0deg, #d6409f 130deg, #8b5cf6 250deg, #4fd1d9 320deg, #f2994a 360deg) border-box`;
+      selTema.style.background = gradiente;
+      selUnidad.style.background = gradiente;
+    } else if (key === 'invierno') {
+      const gradiente = `linear-gradient(#ffffff, #ffffff) padding-box, conic-gradient(from 0deg, #f2994a 0deg, #d6409f 130deg, #8b5cf6 250deg, #4fd1d9 320deg, #f2994a 360deg) border-box`;
+      selTema.style.background = gradiente;
+      selUnidad.style.background = gradiente;
+    } else {
+      selTema.style.background = '';
+      selUnidad.style.background = '';
+    }
+    
+    // Activar partículas del tema de Geografía
+    Object.entries(particleSystemsGEOGRAFIA).forEach(([geoKey, ps]) => {
+      if (ps && geoKey === key) {
+        ps.start();
+      } else if (ps) {
+        ps.stop();
+      }
+    });
+    
+    // Activar plumas piedra si es Terreno
+    if (key === 'terreno') {
+      particleSystemGEOGRAFIA_terreno_feathers.start();
+      particleSystemGEOGRAFIA_terreno_squares.start();
+      particleSystemGEOGRAFIA_flora_feathers.stop();
+      particleSystemGEOGRAFIA_flora_flowers.stop();
+      particleSystemGEOGRAFIA_clima.stop();
+    } else if (key === 'flora_fauna') {
+      particleSystemGEOGRAFIA_terreno_feathers.stop();
+      particleSystemGEOGRAFIA_terreno_squares.stop();
+      particleSystemGEOGRAFIA_flora_feathers.start();
+      particleSystemGEOGRAFIA_flora_flowers.start();
+      particleSystemGEOGRAFIA_clima.stop();
+    } else if (key === 'clima_estaciones') {
+      particleSystemGEOGRAFIA_terreno_feathers.stop();
+      particleSystemGEOGRAFIA_terreno_squares.stop();
+      particleSystemGEOGRAFIA_flora_feathers.stop();
+      particleSystemGEOGRAFIA_flora_flowers.stop();
+      particleSystemGEOGRAFIA_clima.start();
+    } else {
+      particleSystemGEOGRAFIA_terreno_feathers.stop();
+      particleSystemGEOGRAFIA_terreno_squares.stop();
+      particleSystemGEOGRAFIA_flora_feathers.stop();
+      particleSystemGEOGRAFIA_flora_flowers.stop();
+      particleSystemGEOGRAFIA_clima.stop();
+    }
   } else if (estado.unidad === 'NÚMEROS Y TIEMPO') {
     document.body.classList.add(`tema-${key}`);
     selTema.style.background = '';
@@ -1326,12 +1413,44 @@ function elegirTema(key, nombre) {
 function elegirSubtema(key, nombre) {
   estado.subtema = key;
   
+  // Agregar clase tema para Verano e Invierno
+  if ((key === 'verano' || key === 'invierno') && estado.tema === 'actividades') {
+    document.body.classList.remove('tema-verano', 'tema-invierno');
+    document.body.classList.add(`tema-${key}`);
+  }
+  
+  // Activar partículas de nieve para Invierno o arena para Verano
+  if (key === 'invierno') {
+    particleSystemINVIERNO_snowflakes.start();
+    particleSystemINVIERNO_snowflakes_small.start();
+    particleSystemVERANO_sand.stop();
+    particleSystemVERANO_sand_small.stop();
+  } else if (key === 'verano') {
+    particleSystemINVIERNO_snowflakes.stop();
+    particleSystemINVIERNO_snowflakes_small.stop();
+    particleSystemVERANO_sand.start();
+    particleSystemVERANO_sand_small.start();
+  } else {
+    particleSystemINVIERNO_snowflakes.stop();
+    particleSystemINVIERNO_snowflakes_small.stop();
+    particleSystemVERANO_sand.stop();
+    particleSystemVERANO_sand_small.stop();
+  }
+  
   // Agregar clase verbos a selSubtema si es unidad VERBOS
   const selSubtema = document.getElementById('selSubtema');
   if (estado.unidad === 'VERBOS') {
     selSubtema.classList.add('verbos');
   } else {
     selSubtema.classList.remove('verbos');
+  }
+  
+  // Aplicar gradiente vibrante a Verano e Invierno
+  if ((key === 'verano' || key === 'invierno') && estado.tema === 'actividades') {
+    const gradiente = `linear-gradient(#ffffff, #ffffff) padding-box, conic-gradient(from 0deg, #f2994a 0deg, #d6409f 130deg, #8b5cf6 250deg, #4fd1d9 320deg, #f2994a 360deg) border-box`;
+    selSubtema.style.background = gradiente;
+  } else {
+    selSubtema.style.background = '';
   }
   
   document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('visible'));
@@ -2232,7 +2351,7 @@ class BubbleParticleSystem {
     }
   }
   createParticle(color) {
-    const particle = { element: document.createElement('div'), color: color };
+    const particle = { element: document.createElement('div'), color: color, opacityMult: this.opacityMultiplier };
     particle.element.style.cssText = `position: fixed; pointer-events: none; width: 20px; height: 20px; border-radius: 50%; border: 2px solid ${color}; background: transparent; box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1), 0 0 8px ${color}; z-index: 0;`;
     this.particles.push(particle);
     this.resetParticle(particle);
@@ -2241,7 +2360,7 @@ class BubbleParticleSystem {
     if (!this.active && particle.element.parentElement) return;
     const x = Math.random() * (window.innerWidth - 30);
     const y = Math.random() * (window.innerHeight - 30);
-    const size = Math.random() * 14 + 7;
+    const size = (Math.random() * 14 + 7) * this.sizeMultiplier;
     const duration = Math.random() * 5000 + 10000;
     const delay = Math.random() * 3000;
     const rotation = Math.random() * 360;
@@ -2834,13 +2953,2160 @@ class FeatherParticleSystem {
   }
 }
 
-// ── SISTEMA DE PARTÍCULAS ──────────────────────────────────────────────────────
-class ParticleSystem {
+// ── SISTEMA DE PARTÍCULAS COMBINADAS ───────────────────────────────────
+// ── HOJAS CAYENDO (CANVAS) ───────────────────────────────────────────
+class LeafCanvasParticleSystem {
+  constructor(containerId, color = '#556B2F') {
+    this.container = document.getElementById(containerId);
+    this.canvas = document.createElement('canvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.animationId = null;
+    this.init();
+  }
+  
+  init() {
+    this.canvas.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      display: none;
+    `;
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+    
+    window.addEventListener('resize', () => {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+    });
+  }
+  
+  createParticle() {
+    return {
+      x: Math.random() * this.canvas.width,
+      y: -20,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: 0.3 + Math.random() * 0.7,
+      rot: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 8,
+      vida: 0,
+      duracion: 300 + Math.random() * 150
+    };
+  }
+  
+  updateAndDraw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      const p = this.particles[i];
+      p.vida += 1;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.rotSpeed;
+      
+      const t = p.vida / p.duracion;
+      if (t >= 1 || p.y > this.canvas.height) {
+        this.particles.splice(i, 1);
+        continue;
+      }
+      
+      const alpha = Math.sin(t * Math.PI);
+      
+      this.ctx.save();
+      this.ctx.globalAlpha = alpha * 0.85;
+      this.ctx.translate(p.x, p.y);
+      this.ctx.rotate(p.rot * Math.PI / 180);
+      this.ctx.fillStyle = this.color;
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, -24);
+      this.ctx.quadraticCurveTo(25, -9, 0, 24);      // Curva derecha MÁS GORDA
+      this.ctx.quadraticCurveTo(-25, -9, 0, -24);    // Curva izquierda MÁS GORDA
+      this.ctx.fill();
+      this.ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+      this.ctx.lineWidth = 1.8;
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, -21);
+      this.ctx.lineTo(0, 21);
+      this.ctx.stroke();
+      this.ctx.restore();
+    }
+    
+    // Generar nuevas partículas
+    const CANTIDAD_OBJETIVO = 30;
+    if (this.particles.length < CANTIDAD_OBJETIVO && Math.random() < 0.09) {
+      this.particles.push(this.createParticle());
+    }
+    
+    if (this.active) {
+      this.animationId = requestAnimationFrame(() => this.updateAndDraw());
+    }
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    
+    if (!this.canvas.parentElement) {
+      document.body.appendChild(this.canvas);
+    }
+    this.canvas.style.display = 'block';
+    
+    // Iniciar con 12 hojas
+    for (let i = 0; i < 12; i++) {
+      const p = this.createParticle();
+      p.vida = Math.random() * p.duracion;
+      this.particles.push(p);
+    }
+    
+    this.updateAndDraw();
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.canvas.style.display = 'none';
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+    }
+    this.particles = [];
+  }
+}
+
+// ── PARTÍCULAS CLIMA Y ESTACIONES (Sistema Flotante) ──────────────────
+class ClimateParticleSystem {
+  constructor(containerId, types = [
+    { tipo: 'flor',   color: '#f0a8c0' },
+    { tipo: 'punto',  color: '#fbf6df' },
+    { tipo: 'punto',  color: '#ffffff' },
+    { tipo: 'punto',  color: '#8ec6e0' },
+    { tipo: 'hoja',   color: '#7cb668' }
+  ]) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.types = types;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 12; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-climate-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-climate-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutClimate {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particleType = this.types[Math.floor(Math.random() * this.types.length)];
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      tipo: particleType.tipo,
+      color: particleType.color
+    };
+    
+    // Canvas para dibujar la partícula
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    ctx.save();
+    ctx.translate(20, 20);
+    
+    if (particleType.tipo === 'flor') {
+      // Flor con 5 pétalos
+      ctx.fillStyle = particleType.color;
+      for (let k = 0; k < 5; k++) {
+        const a = (k / 5) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.ellipse(Math.cos(a) * 3.2, Math.sin(a) * 3.2, 2.6, 1.6, a, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(0, 0, 1.6, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (particleType.tipo === 'hoja') {
+      // Hoja
+      ctx.fillStyle = particleType.color;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 8, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+      ctx.lineWidth = 0.6;
+      ctx.beginPath();
+      ctx.moveTo(-7, 0);
+      ctx.lineTo(7, 0);
+      ctx.stroke();
+    } else {
+      // Punto (con o sin glow)
+      const esBlanca = particleType.color === '#ffffff';
+      const esCrema = particleType.color === '#fbf6df';
+      ctx.shadowBlur = esBlanca ? 16 : 8;
+      ctx.shadowColor = particleType.color;
+      ctx.fillStyle = particleType.color;
+      ctx.beginPath();
+      const radio = esBlanca ? 3.6 : (esCrema ? 4.5 : 3);
+      ctx.arc(0, 0, radio, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 30 + 36;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutClimate ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── COPOS DE NIEVE INVIERNO (Sistema Unicode) ────────────────────────────
+class SnowflakeParticleSystem {
+  constructor(containerId, char = '❄', colors = ['#FFFFFF', '#E8F4F8']) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.char = char;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 8; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-snowflake-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-snowflake-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutSnowflake {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      color: this.colors[Math.floor(Math.random() * this.colors.length)]
+    };
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      font-size: 24px;
+      font-weight: 300;
+      z-index: 0;
+      color: ${particle.color};
+      text-shadow: 0 0 1px ${particle.color};
+      letter-spacing: 2px;
+    `;
+    particle.element.textContent = this.char;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 10 + 16;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.fontSize = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutSnowflake ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── CUADRADOS REDONDEADOS FLOTANTES (Sistema Hexágono) ────────────────
+class RoundedSquareFloatingParticleSystem {
+  constructor(containerId, colors = ['#556B2F', '#7CB342']) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 5; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-square-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-square-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutSquare {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      color: this.colors[Math.floor(Math.random() * this.colors.length)]
+    };
+    
+    // Cuadrado con esquinas redondeadas
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 20px;
+      height: 20px;
+      background: ${particle.color};
+      border-radius: 6px;
+      z-index: 0;
+      box-shadow: 0 0 4px ${particle.color};
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 8 + 10;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutSquare ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── FLORES FLOTANTES TERRENO (Sistema Hexágono) ────────────────────────
+class FlowerShapedParticleSystem {
+  constructor(containerId, colors = ['#E91E63', '#F48FB1']) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 5; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-flower-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-flower-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutFlower {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      color: this.colors[Math.floor(Math.random() * this.colors.length)]
+    };
+    
+    // Canvas para dibujar la flor (5 pétalos + centro)
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    // Dibujar flor en el canvas
+    ctx.save();
+    ctx.translate(20, 20);
+    
+    // 5 pétalos
+    for (let i = 0; i < 5; i++) {
+      ctx.save();
+      ctx.rotate((i * Math.PI * 2) / 5);
+      ctx.fillStyle = particle.color;
+      ctx.beginPath();
+      ctx.ellipse(0, -8, 4, 8, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+    
+    // Centro amarillo
+    ctx.fillStyle = '#FFD700';
+    ctx.beginPath();
+    ctx.arc(0, 0, 3, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 8 + 10;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutFlower ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── PLUMAS FLOTANTES TERRENO (Sistema Hexágono) ────────────────────────
+class FeatherShapedTerrenoParticleSystem {
+  constructor(containerId, colors = ['#8B7355', '#D9CFC4']) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 5; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-feather-terreno-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-feather-terreno-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutFeatherTerreno {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      color: this.colors[Math.floor(Math.random() * this.colors.length)]
+    };
+    
+    // Canvas pequeño para dibujar la pluma FINITA
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    // Dibujar pluma FINITA en el canvas
+    ctx.save();
+    ctx.translate(20, 20);
+    ctx.fillStyle = particle.color;
+    ctx.beginPath();
+    ctx.moveTo(0, -12);
+    ctx.quadraticCurveTo(4, -5, 0, 12);
+    ctx.quadraticCurveTo(-4, -5, 0, -12);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.moveTo(0, -10);
+    ctx.lineTo(0, 10);
+    ctx.stroke();
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 14 + 18;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutFeatherTerreno ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── HOJAS FLOTANTES (Sistema Hexágono) ───────────────────────────────
+class LeafShapedParticleSystem {
+  constructor(containerId, colors = ['#556B2F', '#7CB342']) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 5; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-leaf-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-leaf-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutLeaf {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      color: this.colors[Math.floor(Math.random() * this.colors.length)]
+    };
+    
+    // Canvas pequeño para dibujar la hoja
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    // Dibujar hoja en el canvas - MÁS GORDA (hojas)
+    ctx.save();
+    ctx.translate(20, 20);
+    ctx.fillStyle = particle.color;
+    ctx.beginPath();
+    ctx.moveTo(0, -12);
+    ctx.quadraticCurveTo(10, -5, 0, 12);
+    ctx.quadraticCurveTo(-10, -5, 0, -12);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.moveTo(0, -10);
+    ctx.lineTo(0, 10);
+    ctx.stroke();
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 14 + 18;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutLeaf ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── PARTÍCULAS PLUMA OPACAS (Sistema Hexágono) ───────────────────────
+class FeatherShapedOpaqueParticleSystem {
+  constructor(containerId, colors = ['#B8E3F0', '#E8F5FB']) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 5; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-feather-opaque-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-feather-opaque-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutOpaqueFeather {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      color: this.colors[Math.floor(Math.random() * this.colors.length)]
+    };
+    
+    // Canvas pequeño para dibujar la pluma
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    // Dibujar pluma en el canvas - MÁS FINITA
+    ctx.save();
+    ctx.translate(20, 20);
+    ctx.fillStyle = particle.color;
+    ctx.beginPath();
+    ctx.moveTo(0, -12);
+    ctx.quadraticCurveTo(6, -5, 0, 12);
+    ctx.quadraticCurveTo(-6, -5, 0, -12);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.moveTo(0, -10);
+    ctx.lineTo(0, 10);
+    ctx.stroke();
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 14 + 18;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutOpaqueFeather ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── PARTÍCULAS FORMA PLUMA (Sistema Hexágono) ───────────────────────
+class FeatherShapedParticleSystem {
+  constructor(containerId, colors = ['#B8E3F0', '#E8F5FB']) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 10; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-feather-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-feather-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutFeather {
+          0% { opacity: 0; }
+          10% { opacity: 0.6375; }
+          90% { opacity: 0.6375; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      color: this.colors[Math.floor(Math.random() * this.colors.length)]
+    };
+    
+    // Canvas pequeño para dibujar la pluma
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    // Dibujar pluma en el canvas - MÁS FINITA
+    ctx.save();
+    ctx.translate(20, 20);
+    ctx.fillStyle = particle.color;
+    ctx.beginPath();
+    ctx.moveTo(0, -12);
+    ctx.quadraticCurveTo(6, -5, 0, 12);
+    ctx.quadraticCurveTo(-6, -5, 0, -12);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.moveTo(0, -10);
+    ctx.lineTo(0, 10);
+    ctx.stroke();
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 14 + 18;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutFeather ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── PLUMAS CAYENDO (CANVAS) ───────────────────────────────────────────
+class FeatherCanvasParticleSystem {
+  constructor(containerId, color = '#C9A961') {
+    this.container = document.getElementById(containerId);
+    this.canvas = document.createElement('canvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.animationId = null;
+    this.init();
+  }
+  
+  init() {
+    this.canvas.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      display: none;
+    `;
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+    
+    window.addEventListener('resize', () => {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+    });
+  }
+  
+  createParticle() {
+    return {
+      x: Math.random() * this.canvas.width,
+      y: -20,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: 0.3 + Math.random() * 0.7,
+      rot: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 8,
+      vida: 0,
+      duracion: 300 + Math.random() * 150
+    };
+  }
+  
+  updateAndDraw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      const p = this.particles[i];
+      p.vida += 1;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.rotSpeed;
+      
+      const t = p.vida / p.duracion;
+      if (t >= 1 || p.y > this.canvas.height) {
+        this.particles.splice(i, 1);
+        continue;
+      }
+      
+      const alpha = Math.sin(t * Math.PI);
+      
+      this.ctx.save();
+      this.ctx.globalAlpha = alpha * 0.85;
+      this.ctx.translate(p.x, p.y);
+      this.ctx.rotate(p.rot * Math.PI / 180);
+      this.ctx.fillStyle = this.color;
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, -24);
+      this.ctx.quadraticCurveTo(15, -9, 0, 24);
+      this.ctx.quadraticCurveTo(-15, -9, 0, -24);
+      this.ctx.fill();
+      this.ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+      this.ctx.lineWidth = 1.8;
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, -21);
+      this.ctx.lineTo(0, 21);
+      this.ctx.stroke();
+      this.ctx.restore();
+    }
+    
+    // Generar nuevas partículas
+    const CANTIDAD_OBJETIVO = 30;
+    if (this.particles.length < CANTIDAD_OBJETIVO && Math.random() < 0.09) {
+      this.particles.push(this.createParticle());
+    }
+    
+    if (this.active) {
+      this.animationId = requestAnimationFrame(() => this.updateAndDraw());
+    }
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    
+    if (!this.canvas.parentElement) {
+      document.body.appendChild(this.canvas);
+    }
+    this.canvas.style.display = 'block';
+    
+    // Iniciar con 12 plumas
+    for (let i = 0; i < 12; i++) {
+      const p = this.createParticle();
+      p.vida = Math.random() * p.duracion;
+      this.particles.push(p);
+    }
+    
+    this.updateAndDraw();
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.canvas.style.display = 'none';
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+    }
+    this.particles = [];
+  }
+}
+
+// ── CHISPITAS (ESTRELLA UNICODE) ───────────────────────────────────────
+class ChispitasParticleSystem {
+  constructor(containerId, color = '#2E8B9E') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 8; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOut {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      color: this.color
+    };
+    
+    // Usar estrella Unicode - MÁS GRANDE
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      font-size: 28px;
+      color: ${this.color};
+      z-index: 0;
+      line-height: 1;
+      text-shadow: 0 0 8px ${this.color}, 0 0 12px ${this.color};
+      font-weight: bold;
+    `;
+    
+    particle.element.textContent = '✦';
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── PERSONAJE SVG (CABEZA + CUERPO) ───────────────────────────────────
+class CharacterSVGParticleSystem {
+  constructor(containerId, color = '#2E8B9E') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 5; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOut {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      color: this.color
+    };
+    
+    // SVG de personaje (cabeza + cuerpo)
+    const svgHtml = `
+      <svg width="34" height="44" viewBox="0 0 40 52" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="12" r="10" fill="${this.color}"></circle>
+        <path d="M12 24 Q20 18 28 24 L34 48 Q20 54 6 48 Z" fill="${this.color}"></path>
+      </svg>
+    `;
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      line-height: 1;
+    `;
+    
+    particle.element.innerHTML = svgHtml;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 50);
+    const size = Math.random() * 14 + 16;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = size + 'px';
+    particle.element.style.height = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── ÓVALO MUY APLASTADO ───────────────────────────────────────────────────
+class OvalParticleSystem {
+  constructor(containerId, color = '#000000') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 5; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOut {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      color: this.color
+    };
+    
+    // Óvalo menos aplastado - limpio
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 24px;
+      height: 18px;
+      border-radius: 50%;
+      background: ${this.color};
+      z-index: 0;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const width = Math.random() * 10 + 16;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = width + 'px';
+    particle.element.style.height = (width * 0.75) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── PLUMA SVG ───────────────────────────────────────────────────────────
+class FeatherSVGParticleSystem {
+  constructor(containerId, color = '#2C2C2C') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 5; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOut {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      color: this.color
+    };
+    
+    // SVG de pluma
+    const svgHtml = `
+      <svg width="30" height="40" viewBox="0 0 30 40" xmlns="http://www.w3.org/2000/svg">
+        <rect x="13" y="2" width="4" height="20" fill="#8B7355" rx="2"/>
+        <path d="M15 22 Q10 25, 8 35 Q10 33, 15 38 Q20 33, 22 35 Q20 25, 15 22" fill="${this.color}"/>
+        <path d="M15 22 L15 38" stroke="#4A4A4A" stroke-width="0.5" fill="none"/>
+      </svg>
+    `;
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      line-height: 1;
+    `;
+    
+    particle.element.innerHTML = svgHtml;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 14 + 14;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = size + 'px';
+    particle.element.style.height = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── HOJA SVG VERDE PLANO ───────────────────────────────────────────────────
+class LeafSVGParticleSystem {
+  constructor(containerId, color = '#556B2F') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 5; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOut {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      color: this.color
+    };
+    
+    // Usar ❪ Unicode más grueso y distorsionado - VERDE MUSGO CLARO
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      font-size: 28px;
+      color: #556B2F;
+      z-index: 0;
+      line-height: 1;
+      filter: blur(1px);
+      font-weight: 900;
+      text-shadow: 0 0 3px #9ACD32, 0 0 5px #9ACD32;
+    `;
+    
+    particle.element.textContent = '❪';
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const size = Math.random() * 14 + 14;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = size + 'px';
+    particle.element.style.height = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── DIAMANTE CON COSTADOS REDONDEADOS ───────────────────────────────────
+class RoundedDiamondParticleSystem {
+  constructor(containerId, color = '#000000') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 5; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOut {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      color: this.color
+    };
+    
+    // Usar 🍁 emoji verde sólido y plano
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      font-size: 40px;
+      color: #556B2F;
+      z-index: 0;
+      line-height: 1;
+      filter: saturate(0%) brightness(0.6) contrast(1.5) drop-shadow(0 0 2px rgba(85, 107, 47, 0.5));
+      opacity: 0.95;
+      text-shadow: 0 0 1px #556B2F;
+    `;
+    
+    particle.element.textContent = '🍁';
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const fontSize = Math.random() * 14 + 14;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.fontSize = fontSize + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── SISTEMA DUAL DE PARTÍCULAS UNICODE (dos colores) ──────────────────
+class DualUnicodeParticleSystem {
+  constructor(ps1, ps2) {
+    this.ps1 = ps1;
+    this.ps2 = ps2;
+  }
+  
+  start() {
+    this.ps1.start();
+    this.ps2.start();
+  }
+  
+  stop() {
+    this.ps1.stop();
+    this.ps2.stop();
+  }
+}
+
+class UnicodeParticleSystem {
+  constructor(containerId, character = '♦', color = '#FFFFFF') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.character = character;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 5; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOut {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      color: this.color
+    };
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      font-size: 28px;
+      color: ${this.color};
+      z-index: 0;
+      line-height: 1;
+      text-shadow: 0 0 2px ${this.color}, 0 0 3px ${this.color};
+      font-weight: 900;
+      letter-spacing: 2px;
+    `;
+    
+    particle.element.textContent = this.character;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const fontSize = Math.random() * 14 + 14;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.fontSize = fontSize + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+class TeardropParticleSystem {
   constructor(containerId, colors = null) {
     this.container = document.getElementById(containerId);
     this.particles = [];
     this.active = false;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 5; i++) {
+      this.createParticle('#FFFFFF');
+    }
+    
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOut {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle(color) {
+    const particle = {
+      element: document.createElement('div'),
+      color: color
+    };
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 14px;
+      height: 20px;
+      background: ${color};
+      clip-path: polygon(50% 0%, 100% 40%, 70% 100%, 50% 85%, 30% 100%, 0% 40%);
+      box-shadow: 0 0 8px ${color};
+      z-index: 0;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const size = Math.random() * 14 + 7;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = size + 'px';
+    particle.element.style.height = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+class CombinedParticleSystem {
+  constructor(containerId, colors = null) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    // 5 círculos rojo, 5 cuadrados arena (sin verde)
+    const tipos = [];
+    for (let i = 0; i < 5; i++) tipos.push('circulo');
+    for (let i = 0; i < 5; i++) tipos.push('cuadrado');
+    
+    tipos.forEach((tipo, idx) => {
+      if (tipo === 'circulo') {
+        this.createParticle('#E63946', tipo);
+      } else if (tipo === 'cuadrado') {
+        this.createParticle('#C9A961', tipo);
+      }
+    });
+    
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOut {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle(color, tipo) {
+    const particle = {
+      element: document.createElement('div'),
+      color: color,
+      tipo: tipo
+    };
+    
+    if (tipo === 'circulo') {
+      particle.element.style.cssText = `
+        position: fixed;
+        pointer-events: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: ${color};
+        z-index: 0;
+      `;
+    } else if (tipo === 'cuadrado') {
+      // Cuadrado con esquinas redondeadas
+      particle.element.style.cssText = `
+        position: fixed;
+        pointer-events: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 6px;
+        background: ${color};
+        box-shadow: 0 0 8px ${color};
+        z-index: 0;
+      `;
+    }
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const size = Math.random() * 14 + 7;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = size + 'px';
+    particle.element.style.height = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── SISTEMA DE PARTÍCULAS ──────────────────────────────────────────────────────
+class ParticleSystem {
+  constructor(containerId, colors = null, sizeMultiplier = 1, opacityMultiplier = 1) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
     this.colors = colors; // Array de colores personalizado
+    this.sizeMultiplier = sizeMultiplier; // Multiplicador de tamaño (1 = normal)
+    this.opacityMultiplier = opacityMultiplier; // Multiplicador de opacidad (1 = normal)
     this.init();
   }
   
@@ -2947,24 +5213,358 @@ class ParticleSystem {
 
 // Instanciar sistemas de partículas para cada unidad
 const particleSystemABECEDARIO = new ParticleSystem('mesa'); // Celeste + blancas por defecto
+const particleSystemABECEDARIO_feathers = new FeatherCanvasParticleSystem('mesa', '#C9A961'); // Plumas cayendo
 const particleSystemCULTURA = new ParticleSystem('mesa'); // Mismo que ABECEDARIO - Celeste + blancas
 const particleSystemVERBOS = new ParticleSystem('mesa', ['#FFC93C', '#F0932F', '#E63946', '#FF4D9F', '#8557D4', '#17B8CE', '#6FCF3D']); // 7 colores
 
 // Sistemas de partículas para los 6 CASOS (cada uno con sus colores)
 const particleSystemCASO1 = new ParticleSystem('mesa', ['#E63946', '#F7B8BE']); // Rojo + Rojo claro
 const particleSystemCASO2 = new ParticleSystem('mesa', ['#8B7B6F', '#D9CFC4']);
-const particleSystemCASO3 = new BubbleParticleSystem('mesa', ['#CCB0E3', '#E9DFF1']);
+const particleSystemCASO3 = new BubbleParticleSystem('mesa', ['#8557D4', '#D4C4F0']);
 const particleSystemCASO4 = new RoundedSquareParticleSystem('mesa', ['#556B2F', '#9ACD32']); // Verde musgo + Verde claro
-const particleSystemCASO5 = new StarParticleSystem('mesa', ['#C9A961', '#E8D5B7']);
-const particleSystemCASO6 = new FeatherHexagonParticleSystem('mesa', ['#B8E3F0', '#E8F5FB']);
+const particleSystemCASO5_dark = new UnicodeParticleSystem('mesa', '✦', '#C9A961'); // Estrella Unicode arena oscuro
+const particleSystemCASO5_light = new UnicodeParticleSystem('mesa', '✦', '#E8D5B7'); // Estrella Unicode arena claro
+const particleSystemCASO5 = new DualUnicodeParticleSystem(particleSystemCASO5_dark, particleSystemCASO5_light);
+const particleSystemCASO6 = new FeatherShapedParticleSystem('mesa', ['#B8E3F0', '#E8F5FB']); // Plumas celeste con efecto hexágono
+const particleSystemCASO6_opaque = new FeatherShapedOpaqueParticleSystem('mesa', ['#B8E3F0', '#E8F5FB']); // Plumas opacas
 
 // Map para acceso fácil a sistemas de CASOS
 const particleSystemCULTURA_pais = new ParticleSystem('mesa'); // Celeste + blancas (mismo que ABECEDARIO)
-const particleSystemCULTURA_gastronomia = new ParticleSystem('mesa'); // Por ahora igual, se puede cambiar
+const particleSystemCULTURA_gastronomia = new CombinedParticleSystem('mesa'); // Rojo, arena
+const particleSystemCULTURA_gastronomia_diamonds = new UnicodeParticleSystem('mesa', '♦', '#556B2F'); // Diamantes musgo
 
 const particleSystemsCULTURA = {
   'pais': particleSystemCULTURA_pais,
   'gastronomia': particleSystemCULTURA_gastronomia
+};
+
+const particleSystemCOLORES = new ParticleSystem('mesa', ['#C9A961', '#E8D5B7'], 0.5, 0.7); // Arena, 50% tamaño, 70% opacidad
+
+// Geografía y Clima - Terreno con hojas flotantes (como ABECEDARIO)
+const particleSystemGEOGRAFIA_terreno = new LeafShapedParticleSystem('mesa', ['#556B2F', '#7CB342']); // Hojas flotantes
+const particleSystemGEOGRAFIA_terreno_feathers = new FeatherShapedTerrenoParticleSystem('mesa', ['#8B7355', '#D9CFC4']); // Plumas piedra
+const particleSystemGEOGRAFIA_terreno_squares = new RoundedSquareFloatingParticleSystem('mesa', ['#808080', '#D3D3D3']); // Cuadrados redondeados gris
+
+// Invierno - Copos de nieve
+const particleSystemINVIERNO_snowflakes = new SnowflakeParticleSystem('mesa', '❄', ['#FFFFFF', '#E8F4F8']);
+
+// Invierno - Copos de nieve pequeños (30% más chicos, 50% blur)
+class SmallSnowflakeParticleSystem {
+  constructor(containerId, char = '❄', colors = ['#FFFFFF', '#E8F4F8']) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.char = char;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 8; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-small-snowflake-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-small-snowflake-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutSmallSnowflake {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      color: this.colors[Math.floor(Math.random() * this.colors.length)]
+    };
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      font-size: 16.8px;
+      font-weight: 300;
+      z-index: 0;
+      color: ${particle.color};
+      text-shadow: 0 0 3.5px ${particle.color};
+      letter-spacing: 2px;
+    `;
+    particle.element.textContent = this.char;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 7 + 11.2;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.fontSize = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutSmallSnowflake ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+const particleSystemINVIERNO_snowflakes_small = new SmallSnowflakeParticleSystem('mesa', '❄', ['#FFFFFF', '#E8F4F8']);
+
+// Verano - Partículas de arena ✻
+class SandParticleSystem {
+  constructor(containerId, char = '✻', colors = ['#C9A961', '#E8D5B7']) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.char = char;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 8; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-sand-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-sand-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutSand {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      color: this.colors[Math.floor(Math.random() * this.colors.length)]
+    };
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      font-size: 24px;
+      font-weight: 300;
+      z-index: 0;
+      color: ${particle.color};
+      text-shadow: 0 0 3.5px ${particle.color};
+      letter-spacing: 2px;
+    `;
+    particle.element.textContent = this.char;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 10 + 16;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.fontSize = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutSand ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// Verano - Partículas de arena pequeñas (30% más chicas, 50% blur)
+class SmallSandParticleSystem {
+  constructor(containerId, char = '✻', colors = ['#C9A961', '#E8D5B7']) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.char = char;
+    this.colors = colors;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 8; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-small-sand-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-small-sand-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutSmallSand {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      color: this.colors[Math.floor(Math.random() * this.colors.length)]
+    };
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      font-size: 16.8px;
+      font-weight: 300;
+      z-index: 0;
+      color: ${particle.color};
+      text-shadow: 0 0 3.5px ${particle.color};
+      letter-spacing: 2px;
+    `;
+    particle.element.textContent = this.char;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 7 + 11.2;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.fontSize = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutSmallSand ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+const particleSystemVERANO_sand = new SandParticleSystem('mesa', '✦', ['#f2994a', '#d6409f', '#8b5cf6', '#4fd1d9']);
+const particleSystemVERANO_sand_small = new SmallSandParticleSystem('mesa', '✦', ['#f2994a', '#d6409f', '#8b5cf6', '#4fd1d9']);
+
+// Geografía y Clima - Flora y Fauna (mismas partículas)
+const particleSystemGEOGRAFIA_flora = new LeafShapedParticleSystem('mesa', ['#556B2F', '#7CB342']); // Hojas flotantes
+const particleSystemGEOGRAFIA_flora_feathers = new FeatherShapedTerrenoParticleSystem('mesa', ['#8B7355', '#D9CFC4']); // Plumas piedra
+const particleSystemGEOGRAFIA_flora_flowers = new FlowerShapedParticleSystem('mesa', ['#F48FB1', '#FCE4EC']); // Flores rosa pastel
+
+// Geografía y Clima - Clima y Estaciones
+const particleSystemGEOGRAFIA_clima = new ClimateParticleSystem('mesa', [
+  { tipo: 'flor',   color: '#f0a8c0' },
+  { tipo: 'punto',  color: '#fbf6df' },
+  { tipo: 'punto',  color: '#ffffff' },
+  { tipo: 'punto',  color: '#8ec6e0' },
+  { tipo: 'hoja',   color: '#7cb668' }
+]);
+
+const particleSystemsGEOGRAFIA = {
+  'terreno': particleSystemGEOGRAFIA_terreno,
+  'flora_fauna': particleSystemGEOGRAFIA_flora,
+  'clima_estaciones': particleSystemGEOGRAFIA_clima
 };
 
 const particleSystemsCASOS = {
@@ -2983,26 +5583,68 @@ window.addEventListener('cambioUnidad', (e) => {
     particleSystemVERBOS.stop();
     Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
     Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
+    particleSystemCOLORES.stop();
+    particleSystemINVIERNO_snowflakes.stop();
+    particleSystemINVIERNO_snowflakes_small.stop();
+    particleSystemVERANO_sand.stop();
+    particleSystemVERANO_sand_small.stop();
   } else if (e.detail.unidad === 'VERBOS') {
     particleSystemVERBOS.start();
     particleSystemABECEDARIO.stop();
     Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
     Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
+    particleSystemCOLORES.stop();
+    particleSystemINVIERNO_snowflakes.stop();
+    particleSystemINVIERNO_snowflakes_small.stop();
+    particleSystemVERANO_sand.stop();
+    particleSystemVERANO_sand_small.stop();
   } else if (e.detail.unidad === 'CASOS') {
     particleSystemABECEDARIO.stop();
     particleSystemVERBOS.stop();
     Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
+    particleSystemCOLORES.stop();
+    particleSystemINVIERNO_snowflakes.stop();
+    particleSystemINVIERNO_snowflakes_small.stop();
+    particleSystemVERANO_sand.stop();
+    particleSystemVERANO_sand_small.stop();
     // Se activarán en el evento de cambio de tema
   } else if (e.detail.unidad === 'CULTURA') {
     particleSystemABECEDARIO.stop();
     particleSystemVERBOS.stop();
     Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
+    particleSystemCOLORES.stop();
+    particleSystemINVIERNO_snowflakes.stop();
+    particleSystemINVIERNO_snowflakes_small.stop();
+    particleSystemVERANO_sand.stop();
+    particleSystemVERANO_sand_small.stop();
     // Se activarán en el evento de cambio de tema
+  } else if (e.detail.unidad === 'GEOGRAFÍA Y CLIMA') {
+    particleSystemABECEDARIO.stop();
+    particleSystemVERBOS.stop();
+    Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
+    Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
+    particleSystemCOLORES.stop();
+    // Se activarán en el evento de cambio de tema
+  } else if (e.detail.unidad === 'COLORES') {
+    particleSystemABECEDARIO.stop();
+    particleSystemVERBOS.stop();
+    Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
+    Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
+    particleSystemCOLORES.start();
+    particleSystemINVIERNO_snowflakes.stop();
+    particleSystemINVIERNO_snowflakes_small.stop();
+    particleSystemVERANO_sand.stop();
+    particleSystemVERANO_sand_small.stop();
   } else {
     particleSystemABECEDARIO.stop();
     particleSystemVERBOS.stop();
     Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
     Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
+    particleSystemCOLORES.stop();
+    particleSystemINVIERNO_snowflakes.stop();
+    particleSystemINVIERNO_snowflakes_small.stop();
+    particleSystemVERANO_sand.stop();
+    particleSystemVERANO_sand_small.stop();
   }
 });
 
