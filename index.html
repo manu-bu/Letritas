@@ -98,6 +98,13 @@ body {
   --btn-active-glow:#aaff00;
   --btn-active-border:#88cc00;
 
+  /* Temas Geografía y Clima */
+  --tema-c1:       #8B7B6F;
+  --tema-c2:       #D9CFC4;
+  --tema-c3:       #6FCF3D;
+  --tema-c4:       #E89CB8;
+  --tema-c5:       #6B4423;
+
   /* Tarjetas */
   --card-bg:       #ffffff;
   --card-radius:   16px;
@@ -202,10 +209,6 @@ header {
     ) border-box;
 }
 
-.selector.verbos {
-  color: #3a3a38;
-}
-
 .selector.colores {
   background:
     linear-gradient(#ffffff, #ffffff) padding-box,
@@ -218,6 +221,21 @@ header {
       #8557D4,      /* Violeta */
       #E89CB8,      /* Rosa */
       #E63946       /* Rojo nuevamente para cerrar el círculo */
+    ) border-box;
+  color: #3a3a38;
+}
+
+/* Selector GEOGRAFÍA Y CLIMA — borde conic-gradient tierra/flora/clima */
+.selector.geografia {
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    conic-gradient(
+      var(--tema-c1),
+      var(--tema-c2),
+      var(--tema-c3),
+      var(--tema-c4),
+      var(--tema-c5),
+      var(--tema-c1)
     ) border-box;
   color: #3a3a38;
 }
@@ -474,7 +492,7 @@ header {
 
 body.tema-letras { background: #B8E3F0 !important; }
 body.tema-cultura-pais { background: #B8E3F0 !important; }
-body.tema-cultura-gastronomia { background: #8B7B6F !important; }
+body.tema-cultura-gastronomia { background: #F2EADF !important; }
 body.tema-verbos { background: #F5F3F0 !important; }
 body.tema-caso1 { background: #5C1E1E !important; }
 body.tema-caso2 { background: #515147 !important; }
@@ -1154,9 +1172,45 @@ function elegirUnidad(key, nombre, tipo) {
   selSubtema.style.background = '';
   
   // Remover todas las clases especiales primero
-  selUnidad.classList.remove('verbos', 'abecedario', 'colores');
-  selTema.classList.remove('verbos', 'abecedario', 'colores');
-  selSubtema.classList.remove('verbos', 'abecedario', 'colores');
+  selUnidad.classList.remove('verbos', 'abecedario', 'colores', 'geografia');
+  selTema.classList.remove('verbos', 'abecedario', 'colores', 'geografia');
+  selSubtema.classList.remove('verbos', 'abecedario', 'colores', 'geografia');
+  
+  // ╔════ DETENER TODAS LAS PARTÍCULAS AL CAMBIAR UNIDAD (Mecánica Ruso) ════╗
+  // Detener ABSOLUTAMENTE TODO, sin importar de dónde vienes
+  try {
+    particleSystemABECEDARIO?.stop?.();
+    particleSystemVERBOS?.stop?.();
+    Object.values(particleSystemsCASOS).forEach(ps => ps?.stop?.());
+    particleSystemCASO6_opaque?.stop?.();
+    Object.values(particleSystemsCULTURA).forEach(ps => ps?.stop?.());
+    particleSystemCULTURA_gastronomia_redcircle?.stop?.();
+    particleSystemCULTURA_gastronomia_roundedsquare?.stop?.();
+    particleSystemCULTURA_gastronomia_whitedot?.stop?.();
+    particleSystemCULTURA_gastronomia_hojas?.stop?.();
+    particleSystemCOLORES?.stop?.();
+    particleSystemGEOGRAFIA_terreno?.stop?.();
+    particleSystemGEOGRAFIA_terreno_feathers?.stop?.();
+    particleSystemGEOGRAFIA_terreno_squares?.stop?.();
+    particleSystemGEOGRAFIA_flora?.stop?.();
+    particleSystemGEOGRAFIA_flora_feathers?.stop?.();
+    particleSystemGEOGRAFIA_flora_flowers?.stop?.();
+    particleSystemGEOGRAFIA_clima?.stop?.();
+    particleSystemINVIERNO_snowflakes?.stop?.();
+    particleSystemINVIERNO_snowflakes_small?.stop?.();
+    particleSystemVERANO_sand?.stop?.();
+    particleSystemVERANO_sand_small?.stop?.();
+  } catch(e) {}
+  // ╚═════════════════════════════════════════════════════════════════════════╝
+  
+  // Luego activar partículas según la nueva unidad
+  actualizarParticulasAbecedario();
+  actualizarParticulasCasos();
+  actualizarParticulasCultura();
+  actualizarParticulasNumeros();
+  actualizarParticulasModos();
+  actualizarParticulasGeografia();
+  actualizarParticulasColores();
   
   if (key === 'VERBOS') {
     selUnidad.classList.add('verbos');
@@ -1169,6 +1223,9 @@ function elegirUnidad(key, nombre, tipo) {
   } else if (key === 'COLORES') {
     selUnidad.classList.add('colores');
     document.body.classList.add('tema-colores');
+  } else if (key === 'GEOGRAFÍA Y CLIMA') {
+    selUnidad.classList.add('geografia');
+    selTema.classList.add('geografia');
   } else if (key === 'NÚMEROS Y TIEMPO') {
     document.body.classList.add('tema-numeros');
   }
@@ -1200,7 +1257,7 @@ function elegirUnidad(key, nombre, tipo) {
       elegirTema(primerTemaKey, u.temas[primerTemaKey].nombre);
     }
   } else {
-    // Sin temas, aplicar color de unidad directamente
+    // Sin temas, aplicar color de fondo
     aplicarColorFondo();
   }
 
@@ -1213,10 +1270,281 @@ function elegirUnidad(key, nombre, tipo) {
   window.dispatchEvent(new CustomEvent('cambioUnidad', { detail: { unidad: key } }));
 }
 
+// ── FUNCIONES DE DETECCIÓN DE CONTEXTO CASOS (Mecánica Ruso) ────────────────
+function esCaso(numeroCase) {
+  return estado.unidad === 'CASOS' && estado.tema === `caso${numeroCase}`;
+}
+
+function modoActualCasos() {
+  // Retorna el caso actual
+  if (esCaso(1)) return 'caso1';
+  if (esCaso(2)) return 'caso2';
+  if (esCaso(3)) return 'caso3';
+  if (esCaso(4)) return 'caso4';
+  if (esCaso(5)) return 'caso5';
+  if (esCaso(6)) return 'caso6';
+  return null;
+}
+
+// ── ACTUALIZAR PARTÍCULAS SEGÚN CASO (Mecánica Ruso) ────────────────────────
+function actualizarParticulasCasos() {
+  const modo = modoActualCasos();
+  
+  // Detener TODAS las partículas CASOS primero
+  try {
+    Object.values(particleSystemsCASOS).forEach(ps => ps?.stop?.());
+    particleSystemCASO6_opaque?.stop?.();
+  } catch(e) {}
+  
+  // Activar según caso
+  if (modo === 'caso1') {
+    try { particleSystemCASO1?.start?.(); } catch(e) {}
+  } else if (modo === 'caso2') {
+    try { particleSystemCASO2?.start?.(); } catch(e) {}
+  } else if (modo === 'caso3') {
+    try { particleSystemCASO3?.start?.(); } catch(e) {}
+  } else if (modo === 'caso4') {
+    try { particleSystemCASO4?.start?.(); } catch(e) {}
+  } else if (modo === 'caso5') {
+    try { particleSystemCASO5?.start?.(); } catch(e) {}
+  } else if (modo === 'caso6') {
+    try { 
+      particleSystemCASO6?.start?.(); 
+      particleSystemCASO6_opaque?.start?.();
+    } catch(e) {}
+  }
+}
+
+// ── FUNCIONES DE DETECCIÓN DE CONTEXTO CULTURA (Mecánica Ruso) ──────────────
+function esCulturaPais() {
+  return estado.unidad === 'CULTURA' && estado.tema === 'pais';
+}
+
+function esCulturaGastronomia() {
+  return estado.unidad === 'CULTURA' && estado.tema === 'gastronomia';
+}
+
+function modoActualCultura() {
+  if (esCulturaPais()) return 'pais';
+  if (esCulturaGastronomia()) return 'gastronomia';
+  return null;
+}
+
+// ── ACTUALIZAR PARTÍCULAS SEGÚN CULTURA (Mecánica Ruso) ──────────────────────
+function actualizarParticulasCultura() {
+  const modo = modoActualCultura();
+  
+  // Detener TODAS las partículas CULTURA primero
+  try {
+    Object.values(particleSystemsCULTURA).forEach(ps => ps?.stop?.());
+    particleSystemCULTURA_gastronomia_redcircle?.stop?.();
+    particleSystemCULTURA_gastronomia_roundedsquare?.stop?.();
+    particleSystemCULTURA_gastronomia_whitedot?.stop?.();
+  } catch(e) {}
+  
+  // Activar según modo
+  if (modo === 'pais') {
+    try {
+      Object.values(particleSystemsCULTURA).forEach(ps => ps?.start?.());
+    } catch(e) {}
+  } else if (modo === 'gastronomia') {
+    try {
+      particleSystemCULTURA_gastronomia_redcircle?.start?.();
+      particleSystemCULTURA_gastronomia_roundedsquare?.start?.();
+      particleSystemCULTURA_gastronomia_whitedot?.start?.();
+    } catch(e) {}
+  }
+}
+
+// ── FUNCIONES DE DETECCIÓN DE CONTEXTO NÚMEROS Y TIEMPO (Mecánica Ruso) ─────
+function esNumerosNumeros() {
+  return estado.unidad === 'NÚMEROS Y TIEMPO' && estado.tema === 'numeros';
+}
+
+function esNumerosHora() {
+  return estado.unidad === 'NÚMEROS Y TIEMPO' && estado.tema === 'hora';
+}
+
+function esNumerosDiasMeses() {
+  return estado.unidad === 'NÚMEROS Y TIEMPO' && estado.tema === 'dias_meses';
+}
+
+function modoActualNumeros() {
+  if (esNumerosNumeros()) return 'numeros';
+  if (esNumerosHora()) return 'hora';
+  if (esNumerosDiasMeses()) return 'dias_meses';
+  return null;
+}
+
+// ── ACTUALIZAR PARTÍCULAS SEGÚN NÚMEROS Y TIEMPO (Mecánica Ruso) ──────────────
+function actualizarParticulasNumeros() {
+  // NOTA: Letritas no tiene partículas asignadas a NÚMEROS Y TIEMPO
+  // Esta función está deshabilitada hasta que se agreguen
+  /*
+  const modo = modoActualNumeros();
+  
+  // Detener TODAS las partículas NÚMEROS primero
+  try {
+    Object.values(particleSystemsNUMEROS).forEach(ps => ps?.stop?.());
+  } catch(e) {}
+  
+  // Activar según modo
+  if (modo === 'numeros' && particleSystemsNUMEROS['numeros']) {
+    try { particleSystemsNUMEROS['numeros']?.start?.(); } catch(e) {}
+  } else if (modo === 'hora' && particleSystemsNUMEROS['hora']) {
+    try { particleSystemsNUMEROS['hora']?.start?.(); } catch(e) {}
+  } else if (modo === 'dias_meses' && particleSystemsNUMEROS['dias_meses']) {
+    try { particleSystemsNUMEROS['dias_meses']?.start?.(); } catch(e) {}
+  }
+  */
+}
+
+// ── FUNCIONES DE DETECCIÓN DE CONTEXTO MODOS Y FRASES (Mecánica Ruso) ────────
+function esModosImperativo() {
+  return estado.unidad === 'MODOS Y FRASES';
+}
+
+function modoActualModos() {
+  // MODOS Y FRASES no tiene temas complejos, retorna la unidad
+  if (esModosImperativo()) return 'modos';
+  return null;
+}
+
+// ── ACTUALIZAR PARTÍCULAS SEGÚN MODOS Y FRASES (Mecánica Ruso) ────────────────
+function actualizarParticulasModos() {
+  // NOTA: Letritas no tiene partículas asignadas a MODOS Y FRASES
+  // Esta función está deshabilitada hasta que se agreguen
+  /*
+  const modo = modoActualModos();
+  
+  // Detener TODAS las partículas MODOS primero
+  try {
+    Object.values(particleSystemsMODOS).forEach(ps => ps?.stop?.());
+  } catch(e) {}
+  
+  // Activar según contexto
+  if (modo === 'modos') {
+    try {
+      Object.values(particleSystemsMODOS).forEach(ps => ps?.start?.());
+    } catch(e) {}
+  }
+  */
+}
+
+// ── FUNCIONES DE DETECCIÓN DE CONTEXTO ABECEDARIO (Mecánica Ruso) ────────────
+function esAbecedario() {
+  return estado.unidad === 'ABECEDARIO';
+}
+
+// ── ACTUALIZAR PARTÍCULAS SEGÚN ABECEDARIO (Mecánica Ruso) ────────────────────
+function actualizarParticulasAbecedario() {
+  if (esAbecedario()) {
+    try { particleSystemABECEDARIO?.start?.(); } catch(e) {}
+  } else {
+    try { particleSystemABECEDARIO?.stop?.(); } catch(e) {}
+  }
+}
+
+// ── FUNCIONES DE DETECCIÓN DE CONTEXTO COLORES (Mecánica Ruso) ────────────────
+function esColores() {
+  return estado.unidad === 'COLORES';
+}
+
+// ── ACTUALIZAR PARTÍCULAS SEGÚN COLORES (Mecánica Ruso) ──────────────────────
+function actualizarParticulasColores() {
+  if (esColores()) {
+    try { particleSystemCOLORES?.start?.(); } catch(e) {}
+  } else {
+    try { particleSystemCOLORES?.stop?.(); } catch(e) {}
+  }
+}
+
+// ── FUNCIONES DE DETECCIÓN DE CONTEXTO GEOGRAFÍA (Mecánica Ruso) ────────────
+function esTerreno() {
+  return estado.unidad === 'GEOGRAFÍA Y CLIMA' && estado.tema === 'terreno';
+}
+
+function esFloraFauna() {
+  return estado.unidad === 'GEOGRAFÍA Y CLIMA' && estado.tema === 'flora_fauna';
+}
+
+function esClima() {
+  return estado.unidad === 'GEOGRAFÍA Y CLIMA' && estado.tema === 'clima_estaciones';
+}
+
+function esActividades() {
+  return estado.unidad === 'GEOGRAFÍA Y CLIMA' && estado.tema === 'actividades';
+}
+
+function modoActualGeografia() {
+  // Retorna el tipo de partícula según el contexto
+  if (esTerreno()) return 'terreno';
+  if (esFloraFauna()) return 'flora';
+  if (esClima()) return 'clima';
+  if (esActividades()) return 'actividades';
+  return null;
+}
+
+// ── ACTUALIZAR PARTÍCULAS SEGÚN MODO (Mecánica Ruso) ────────────────────────
+function actualizarParticulasGeografia() {
+  const modo = modoActualGeografia();
+  
+  // Detener TODAS las partículas primero
+  try {
+    particleSystemGEOGRAFIA_terreno_feathers?.stop?.();
+    particleSystemGEOGRAFIA_terreno_squares?.stop?.();
+    particleSystemGEOGRAFIA_flora_feathers?.stop?.();
+    particleSystemGEOGRAFIA_flora_flowers?.stop?.();
+    particleSystemGEOGRAFIA_clima?.stop?.();
+    particleSystemINVIERNO_snowflakes?.stop?.();
+    particleSystemINVIERNO_snowflakes_small?.stop?.();
+    particleSystemVERANO_sand?.stop?.();
+    particleSystemVERANO_sand_small?.stop?.();
+  } catch(e) {}
+  
+  // Activar según modo
+  if (modo === 'terreno') {
+    try {
+      particleSystemGEOGRAFIA_terreno_feathers?.start?.();
+      particleSystemGEOGRAFIA_terreno_squares?.start?.();
+    } catch(e) {}
+  } else if (modo === 'flora') {
+    try {
+      particleSystemGEOGRAFIA_flora_feathers?.start?.();
+      particleSystemGEOGRAFIA_flora_flowers?.start?.();
+    } catch(e) {}
+  } else if (modo === 'clima') {
+    try {
+      particleSystemGEOGRAFIA_clima?.start?.();
+    } catch(e) {}
+  } else if (modo === 'actividades') {
+    // Aquí entra Verano/Invierno — decidir según subtema
+    if (estado.subtema === 'invierno') {
+      try {
+        particleSystemINVIERNO_snowflakes?.start?.();
+        particleSystemINVIERNO_snowflakes_small?.start?.();
+      } catch(e) {}
+    } else if (estado.subtema === 'verano') {
+      try {
+        particleSystemVERANO_sand?.start?.();
+        particleSystemVERANO_sand_small?.start?.();
+      } catch(e) {}
+    }
+  }
+}
+
 // ── Elegir tema ───────────────────────────────────────────────────────
 function elegirTema(key, nombre) {
   estado.tema    = key;
   estado.subtema = null;
+
+  // Actualizar partículas según nuevo contexto (mecánica Ruso)
+  actualizarParticulasGeografia();
+  actualizarParticulasCasos();
+  actualizarParticulasCultura();
+  actualizarParticulasNumeros();
+  actualizarParticulasModos();
+  actualizarParticulasColores();
 
   // Cambiar clase del body para actualizar fondo
   document.body.className = '';
@@ -1244,21 +1572,8 @@ function elegirTema(key, nombre) {
       selUnidad.style.background = gradiente; // Cambiar también el botón de UNIDAD
     }
     
-    // Activar partículas del CASO correspondiente
-    Object.entries(particleSystemsCASOS).forEach(([casoKey, ps]) => {
-      if (casoKey === key) {
-        ps.start();
-      } else {
-        ps.stop();
-      }
-    });
-    
-    // Activar plumas opacas si es CASO 6
-    if (key === 'caso6') {
-      particleSystemCASO6_opaque.start();
-    } else {
-      particleSystemCASO6_opaque.stop();
-    }
+    // Actualizar partículas del CASO (mecánica Ruso)
+    actualizarParticulasCasos();
   } else if (estado.unidad === 'ABECEDARIO') {
     document.body.classList.add('tema-letras');
     selTema.style.background = '';
@@ -1288,11 +1603,17 @@ function elegirTema(key, nombre) {
       }
     });
     
-    // Agregar diamantes blancos si es Gastronomía
+    // Agregar hojas de albahaca si es Gastronomía
     if (key === 'gastronomia') {
-      particleSystemCULTURA_gastronomia_diamonds.start();
+      particleSystemCULTURA_gastronomia_hojas.start();
+      particleSystemCULTURA_gastronomia_redcircle.start();
+      particleSystemCULTURA_gastronomia_roundedsquare.start();
+      particleSystemCULTURA_gastronomia_whitedot.start();
     } else {
-      particleSystemCULTURA_gastronomia_diamonds.stop();
+      particleSystemCULTURA_gastronomia_hojas.stop();
+      particleSystemCULTURA_gastronomia_redcircle.stop();
+      particleSystemCULTURA_gastronomia_roundedsquare.stop();
+      particleSystemCULTURA_gastronomia_whitedot.stop();
     }
   } else if (estado.unidad === 'GEOGRAFÍA Y CLIMA') {
     document.body.classList.add(`tema-${key}`);
@@ -1335,33 +1656,8 @@ function elegirTema(key, nombre) {
         ps.stop();
       }
     });
-    
-    // Activar plumas piedra si es Terreno
-    if (key === 'terreno') {
-      particleSystemGEOGRAFIA_terreno_feathers.start();
-      particleSystemGEOGRAFIA_terreno_squares.start();
-      particleSystemGEOGRAFIA_flora_feathers.stop();
-      particleSystemGEOGRAFIA_flora_flowers.stop();
-      particleSystemGEOGRAFIA_clima.stop();
-    } else if (key === 'flora_fauna') {
-      particleSystemGEOGRAFIA_terreno_feathers.stop();
-      particleSystemGEOGRAFIA_terreno_squares.stop();
-      particleSystemGEOGRAFIA_flora_feathers.start();
-      particleSystemGEOGRAFIA_flora_flowers.start();
-      particleSystemGEOGRAFIA_clima.stop();
-    } else if (key === 'clima_estaciones') {
-      particleSystemGEOGRAFIA_terreno_feathers.stop();
-      particleSystemGEOGRAFIA_terreno_squares.stop();
-      particleSystemGEOGRAFIA_flora_feathers.stop();
-      particleSystemGEOGRAFIA_flora_flowers.stop();
-      particleSystemGEOGRAFIA_clima.start();
-    } else {
-      particleSystemGEOGRAFIA_terreno_feathers.stop();
-      particleSystemGEOGRAFIA_terreno_squares.stop();
-      particleSystemGEOGRAFIA_flora_feathers.stop();
-      particleSystemGEOGRAFIA_flora_flowers.stop();
-      particleSystemGEOGRAFIA_clima.stop();
-    }
+    // La actualización de partículas se maneja por actualizarParticulasGeografia()
+    // (se ejecutó al inicio de elegirTema)
   } else if (estado.unidad === 'NÚMEROS Y TIEMPO') {
     document.body.classList.add(`tema-${key}`);
     selTema.style.background = '';
@@ -1375,7 +1671,12 @@ function elegirTema(key, nombre) {
   const u = UNIDADES[estado.unidad];
   const t = u.temas[key];
   const dropSub = document.getElementById('dropSubtema');
+  const selSubtema = document.getElementById('selSubtema');
   dropSub.innerHTML = '';
+  
+  // Limpiar estilos de selSubtema por defecto
+  selSubtema.style.background = '';
+  
   if (t.subtemas) {
     // Ordenar alfabéticamente por nombre (antes de los :)
     const subtemasSorted = Object.entries(t.subtemas).sort(([, a], [, b]) => {
@@ -1396,7 +1697,7 @@ function elegirTema(key, nombre) {
     if (subtemasSorted.length > 0) {
       const primerSubtemaKey = subtemasSorted[0][0];
       const primerSubtemaNombre = subtemasSorted[0][1].nombre;
-      elegirSubtema(primerSubtemaKey, primerSubtemaNombre);
+      elegirSubtema(primerSubtemaKey, primerSubtemaNombre, true); // true = activar partículas si corresponde
     }
   }
 
@@ -1410,31 +1711,16 @@ function elegirTema(key, nombre) {
 }
 
 // ── Elegir sub-tema ───────────────────────────────────────────────────
-function elegirSubtema(key, nombre) {
+function elegirSubtema(key, nombre, activarPartículas = true) {
   estado.subtema = key;
+  
+  // Actualizar partículas según nuevo contexto (mecánica Ruso)
+  actualizarParticulasGeografia();
   
   // Agregar clase tema para Verano e Invierno
   if ((key === 'verano' || key === 'invierno') && estado.tema === 'actividades') {
     document.body.classList.remove('tema-verano', 'tema-invierno');
     document.body.classList.add(`tema-${key}`);
-  }
-  
-  // Activar partículas de nieve para Invierno o arena para Verano
-  if (key === 'invierno') {
-    particleSystemINVIERNO_snowflakes.start();
-    particleSystemINVIERNO_snowflakes_small.start();
-    particleSystemVERANO_sand.stop();
-    particleSystemVERANO_sand_small.stop();
-  } else if (key === 'verano') {
-    particleSystemINVIERNO_snowflakes.stop();
-    particleSystemINVIERNO_snowflakes_small.stop();
-    particleSystemVERANO_sand.start();
-    particleSystemVERANO_sand_small.start();
-  } else {
-    particleSystemINVIERNO_snowflakes.stop();
-    particleSystemINVIERNO_snowflakes_small.stop();
-    particleSystemVERANO_sand.stop();
-    particleSystemVERANO_sand_small.stop();
   }
   
   // Agregar clase verbos a selSubtema si es unidad VERBOS
@@ -2320,6 +2606,8 @@ if (estadoGuardado) {
 
 
 // ── SISTEMA DE PARTÍCULAS DE BURBUJAS ─────────────────────────────────
+// ── SISTEMA DE PARTÍCULAS GENÉRICO UNIFICADO ──────────────────────────────────
+// ── SISTEMA DE PARTÍCULAS DE BURBUJAS ──────────────────────────────────────────
 class BubbleParticleSystem {
   constructor(containerId, colors = null) {
     this.container = document.getElementById(containerId);
@@ -2389,72 +2677,6 @@ class BubbleParticleSystem {
 
 
 // ── SISTEMA DE PARTÍCULAS DE ESTRELLA 4 PUNTAS ────────────────────────
-class StarParticleSystem {
-  constructor(containerId, colors = null) {
-    this.container = document.getElementById(containerId);
-    this.particles = [];
-    this.active = false;
-    this.colors = colors;
-    this.init();
-  }
-  init() {
-    if (this.colors) {
-      for (let i = 0; i < 15; i++) {
-        const color = this.colors[i % this.colors.length];
-        this.createParticle(color);
-      }
-    } else {
-      for (let i = 0; i < 10; i++) {
-        const color = i % 2 === 0 ? '#B8E3F0' : '#E8F5FB';
-        this.createParticle(color);
-      }
-      for (let i = 0; i < 5; i++) {
-        this.createParticle('#FAFAFA');
-      }
-    }
-    if (!document.querySelector('style[data-particles-style]')) {
-      const style = document.createElement('style');
-      style.setAttribute('data-particles-style', 'true');
-      style.textContent = `@keyframes particleFadeInOut { 0% { opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } }`;
-      document.head.appendChild(style);
-    }
-  }
-  createParticle(color) {
-    const particle = { element: document.createElement('div'), color: color };
-    particle.element.style.cssText = `position: fixed; pointer-events: none; width: 20px; height: 20px; background: linear-gradient(45deg, transparent 30%, ${color} 30%, ${color} 70%, transparent 70%), linear-gradient(-45deg, transparent 30%, ${color} 30%, ${color} 70%, transparent 70%), linear-gradient(90deg, transparent 30%, ${color} 30%, ${color} 70%, transparent 70%), linear-gradient(0deg, transparent 30%, ${color} 30%, ${color} 70%, transparent 70%); background-size: 100% 100%; z-index: 0; filter: drop-shadow(0 0 6px ${color});`;
-    this.particles.push(particle);
-    this.resetParticle(particle);
-  }
-  resetParticle(particle) {
-    if (!this.active && particle.element.parentElement) return;
-    const x = Math.random() * (window.innerWidth - 30);
-    const y = Math.random() * (window.innerHeight - 30);
-    const size = Math.random() * 14 + 7;
-    const duration = Math.random() * 5000 + 10000;
-    const delay = Math.random() * 3000;
-    const rotation = Math.random() * 360;
-    particle.element.style.left = x + 'px';
-    particle.element.style.top = y + 'px';
-    particle.element.style.width = size + 'px';
-    particle.element.style.height = size + 'px';
-    particle.element.style.opacity = '0';
-    particle.element.style.animation = 'none';
-    particle.element.style.transform = `rotate(${rotation}deg)`;
-    void particle.element.offsetWidth;
-    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
-    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
-  }
-  start() {
-    if (this.active) return;
-    this.active = true;
-    this.particles.forEach(p => { if (!p.element.parentElement) document.body.appendChild(p.element); });
-  }
-  stop() {
-    if (!this.active) return;
-    this.active = false;
-    this.particles.forEach(p => { if (p.element.parentElement) p.element.parentElement.removeChild(p.element); });
-  }
-}
 
 
 // ── SISTEMA DE PARTÍCULAS DE CUADRADOS REDONDEADOS ────────────────────
@@ -3688,7 +3910,7 @@ class LeafShapedParticleSystem {
   }
   
   init() {
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
       this.createParticle();
     }
     
@@ -3794,6 +4016,284 @@ class LeafShapedParticleSystem {
       if (p.element.parentElement) {
         p.element.parentElement.removeChild(p.element);
       }
+    });
+  }
+}
+
+// ── PARTÍCULAS CÍRCULO ROJO (Gastronomía) ───────────────────────
+class RedCircleParticleSystem {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 4; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-red-circle-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-red-circle-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutRedCircle {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas')
+    };
+    
+    particle.canvas.width = 15;
+    particle.canvas.height = 15;
+    const ctx = particle.canvas.getContext('2d');
+    
+    ctx.save();
+    ctx.fillStyle = '#E63946';
+    ctx.beginPath();
+    ctx.arc(7.5, 7.5, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 15px;
+      height: 15px;
+      z-index: 0;
+      opacity: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutRedCircle ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) document.body.appendChild(p.element);
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) p.element.parentElement.removeChild(p.element);
+    });
+  }
+}
+
+// ── PARTÍCULAS CUADRADO REDONDEADO ARENA (Gastronomía) ───────────────────────
+class RoundedSquareArenaParticleSystem {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = ['#C9A961', '#E8D5B7'];
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 4; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-rounded-square-arena-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-rounded-square-arena-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutRoundedSquareArena {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      color: this.colors[Math.floor(Math.random() * this.colors.length)]
+    };
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 14px;
+      height: 14px;
+      background-color: ${particle.color};
+      border-radius: 4px;
+      z-index: 0;
+      opacity: 0;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutRoundedSquareArena ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) document.body.appendChild(p.element);
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) p.element.parentElement.removeChild(p.element);
+    });
+  }
+}
+
+// ── PARTÍCULAS PUNTITO BLANCO (Gastronomía) ───────────────────────
+class WhiteDotParticleSystem {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 10; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-white-dot-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-white-dot-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutWhiteDot {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div')
+    };
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 5px;
+      height: 5px;
+      background-color: #FFFFFF;
+      border-radius: 50%;
+      z-index: 0;
+      opacity: 0;
+      filter: blur(0.5px);
+      box-shadow: 0 0 3px #FFFFFF;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 10);
+    const y = Math.random() * (window.innerHeight - 10);
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutWhiteDot ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) document.body.appendChild(p.element);
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) p.element.parentElement.removeChild(p.element);
     });
   }
 }
@@ -5232,10 +5732,14 @@ const particleSystemCASO6_opaque = new FeatherShapedOpaqueParticleSystem('mesa',
 const particleSystemCULTURA_pais = new ParticleSystem('mesa'); // Celeste + blancas (mismo que ABECEDARIO)
 const particleSystemCULTURA_gastronomia = new CombinedParticleSystem('mesa'); // Rojo, arena
 const particleSystemCULTURA_gastronomia_diamonds = new UnicodeParticleSystem('mesa', '♦', '#556B2F'); // Diamantes musgo
+const particleSystemCULTURA_gastronomia_hojas = new LeafShapedParticleSystem('mesa', ['#558B2F', '#7CB342']); // Hojas albahaca tostada y joven
+const particleSystemCULTURA_gastronomia_redcircle = new RedCircleParticleSystem('mesa'); // Círculo rojo
+const particleSystemCULTURA_gastronomia_roundedsquare = new RoundedSquareArenaParticleSystem('mesa'); // Cuadrado redondeado arena
+const particleSystemCULTURA_gastronomia_whitedot = new WhiteDotParticleSystem('mesa'); // Puntito blanco
 
 const particleSystemsCULTURA = {
   'pais': particleSystemCULTURA_pais,
-  'gastronomia': particleSystemCULTURA_gastronomia
+  'gastronomia': particleSystemCULTURA_gastronomia_hojas
 };
 
 const particleSystemCOLORES = new ParticleSystem('mesa', ['#C9A961', '#E8D5B7'], 0.5, 0.7); // Arena, 50% tamaño, 70% opacidad
@@ -5388,12 +5892,13 @@ class SandParticleSystem {
     particle.element.style.cssText = `
       position: fixed;
       pointer-events: none;
-      font-size: 24px;
+      font-size: 18px;
       font-weight: 300;
       z-index: 0;
       color: ${particle.color};
       text-shadow: 0 0 3.5px ${particle.color};
       letter-spacing: 2px;
+      opacity: 0.7;
     `;
     particle.element.textContent = this.char;
     
@@ -5486,12 +5991,13 @@ class SmallSandParticleSystem {
     particle.element.style.cssText = `
       position: fixed;
       pointer-events: none;
-      font-size: 16.8px;
+      font-size: 12.6px;
       font-weight: 300;
       z-index: 0;
       color: ${particle.color};
       text-shadow: 0 0 3.5px ${particle.color};
       letter-spacing: 2px;
+      opacity: 0.7;
     `;
     particle.element.textContent = this.char;
     
@@ -5576,77 +6082,6 @@ const particleSystemsCASOS = {
   'caso6': particleSystemCASO6
 };
 
-// Escuchar cambios de unidad y controlar partículas
-window.addEventListener('cambioUnidad', (e) => {
-  if (e.detail.unidad === 'ABECEDARIO') {
-    particleSystemABECEDARIO.start();
-    particleSystemVERBOS.stop();
-    Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
-    Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
-    particleSystemCOLORES.stop();
-    particleSystemINVIERNO_snowflakes.stop();
-    particleSystemINVIERNO_snowflakes_small.stop();
-    particleSystemVERANO_sand.stop();
-    particleSystemVERANO_sand_small.stop();
-  } else if (e.detail.unidad === 'VERBOS') {
-    particleSystemVERBOS.start();
-    particleSystemABECEDARIO.stop();
-    Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
-    Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
-    particleSystemCOLORES.stop();
-    particleSystemINVIERNO_snowflakes.stop();
-    particleSystemINVIERNO_snowflakes_small.stop();
-    particleSystemVERANO_sand.stop();
-    particleSystemVERANO_sand_small.stop();
-  } else if (e.detail.unidad === 'CASOS') {
-    particleSystemABECEDARIO.stop();
-    particleSystemVERBOS.stop();
-    Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
-    particleSystemCOLORES.stop();
-    particleSystemINVIERNO_snowflakes.stop();
-    particleSystemINVIERNO_snowflakes_small.stop();
-    particleSystemVERANO_sand.stop();
-    particleSystemVERANO_sand_small.stop();
-    // Se activarán en el evento de cambio de tema
-  } else if (e.detail.unidad === 'CULTURA') {
-    particleSystemABECEDARIO.stop();
-    particleSystemVERBOS.stop();
-    Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
-    particleSystemCOLORES.stop();
-    particleSystemINVIERNO_snowflakes.stop();
-    particleSystemINVIERNO_snowflakes_small.stop();
-    particleSystemVERANO_sand.stop();
-    particleSystemVERANO_sand_small.stop();
-    // Se activarán en el evento de cambio de tema
-  } else if (e.detail.unidad === 'GEOGRAFÍA Y CLIMA') {
-    particleSystemABECEDARIO.stop();
-    particleSystemVERBOS.stop();
-    Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
-    Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
-    particleSystemCOLORES.stop();
-    // Se activarán en el evento de cambio de tema
-  } else if (e.detail.unidad === 'COLORES') {
-    particleSystemABECEDARIO.stop();
-    particleSystemVERBOS.stop();
-    Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
-    Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
-    particleSystemCOLORES.start();
-    particleSystemINVIERNO_snowflakes.stop();
-    particleSystemINVIERNO_snowflakes_small.stop();
-    particleSystemVERANO_sand.stop();
-    particleSystemVERANO_sand_small.stop();
-  } else {
-    particleSystemABECEDARIO.stop();
-    particleSystemVERBOS.stop();
-    Object.values(particleSystemsCASOS).forEach(ps => ps.stop());
-    Object.values(particleSystemsCULTURA).forEach(ps => ps.stop());
-    particleSystemCOLORES.stop();
-    particleSystemINVIERNO_snowflakes.stop();
-    particleSystemINVIERNO_snowflakes_small.stop();
-    particleSystemVERANO_sand.stop();
-    particleSystemVERANO_sand_small.stop();
-  }
-});
 
 // Cargar la primera unidad automáticamente
 if (Object.keys(UNIDADES).length > 0) {
