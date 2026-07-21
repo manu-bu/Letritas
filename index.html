@@ -388,8 +388,10 @@ header {
     linear-gradient(135deg, #c8c8c6, #a0a0a0) border-box;
   display: inline-flex;
   flex-direction: column;
-  min-width: 160px;
+  width: auto;
+  min-width: 280px;
   max-width: 420px;
+  height: auto;
   cursor: default;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   transition: box-shadow 0.2s, transform 0.1s;
@@ -503,10 +505,10 @@ body.tema-caso6 { background: #2d5f6f !important; }
 body.tema-terreno { background: #C5D5C0 !important; }
 body.tema-flora_fauna { background: #A8B89B !important; }
 body.tema-clima_estaciones { background: #f2fafd !important; }
-body.tema-verano { background: #E0F6FF !important; }
-body.tema-invierno { background: #D1F0FF !important; }
+body.tema-verano { background: #1E3A5F !important; }
+body.tema-invierno { background: #D1D5DB !important; }
 body.tema-colores { background: #F5F1E8 !important; }
-body.tema-numeros { background: #2A2A2A !important; }
+body.tema-numeros { background: #E8E8E8 !important; }
 body.tema-hora { background: #C9A961 !important; }
 body.tema-dias_meses { background: #1E3A8A !important; }
 
@@ -807,6 +809,88 @@ const CONTENIDO_TARJETAS = {
         
         return div;
       }
+    },
+    {
+      id: 'tarjeta-relojes',
+      titulo: 'Relojes',
+      tipo: 'relojes',
+      render: function() {
+        const div = document.createElement('div');
+        div.className = 'tarjeta';
+        div.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #4A9FB5, #B5D9E8) border-box`;
+        div.style.border = `var(--card-border-w) solid transparent`;
+        div.style.borderRadius = `var(--card-radius)`;
+        
+        const dibujarReloj = (horas, minutos) => {
+          const canvas = document.createElement('canvas');
+          canvas.width = 120;
+          canvas.height = 120;
+          const ctx = canvas.getContext('2d');
+          
+          const centerX = 60;
+          const centerY = 60;
+          const radius = 50;
+          
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, 120, 120);
+          
+          ctx.strokeStyle = '#4A9FB5';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+          ctx.stroke();
+          
+          ctx.fillStyle = '#4A9FB5';
+          ctx.font = 'bold 10px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          for (let i = 1; i <= 12; i++) {
+            const ang = (i - 3) * (Math.PI / 6);
+            const x = centerX + Math.cos(ang) * (radius - 12);
+            const y = centerY + Math.sin(ang) * (radius - 12);
+            ctx.fillText(i, x, y);
+          }
+          
+          ctx.fillStyle = '#4A9FB5';
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, 3, 0, 2 * Math.PI);
+          ctx.fill();
+          
+          const hAng = (horas % 12 + minutos / 60) * (Math.PI / 6) - Math.PI / 2;
+          ctx.strokeStyle = '#4A9FB5';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.lineTo(centerX + Math.cos(hAng) * 20, centerY + Math.sin(hAng) * 20);
+          ctx.stroke();
+          
+          const mAng = (minutos * Math.PI / 30) - Math.PI / 2;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.lineTo(centerX + Math.cos(mAng) * 35, centerY + Math.sin(mAng) * 35);
+          ctx.stroke();
+          
+          return canvas.toDataURL();
+        };
+        
+        const horas = [
+          { h: 3, m: 0, texto: '03:00 (Las tres)' },
+          { h: 6, m: 30, texto: '06:30 (Las seis y media)' },
+          { h: 9, m: 45, texto: '09:45 (Las diez menos cuarto)' }
+        ];
+        
+        let html = `<div class="tarjeta-titulo">Relojes - Aprendiendo la Hora</div><div class="tarjeta-cuerpo" style="padding:12px; display:flex; flex-direction:column; gap:12px;">`;
+        
+        horas.forEach(h => {
+          const imgData = dibujarReloj(h.h, h.m);
+          html += `<div style="display:flex; flex-direction:column; align-items:center; gap:6px;"><img src="${imgData}" style="width:100px; height:100px; border:1px solid #ddd; border-radius:50%;"><div style="font-size:12px; font-weight:600; color:#4A9FB5; text-align:center; cursor:pointer;" class="hablar" data-hablar="${h.texto}">${h.texto}</div></div>`;
+        });
+        
+        html += `</div>`;
+        div.innerHTML = html;
+        return div;
+      }
     }
   ],
   'CULTURA': {
@@ -859,8 +943,410 @@ const CONTENIDO_TARJETAS = {
     ],
     'gastronomia': []
   },
-  'GEOGRAFÍA Y CLIMA': [],
-  'NÚMEROS Y TIEMPO': [],
+  'GEOGRAFÍA Y CLIMA': {
+    'terreno': [
+      {
+        id: 'tarjeta-terreno-picos',
+        titulo: 'Picos',
+        tipo: 'tres-columnas',
+        render: function() {
+          const div = document.createElement('div');
+          div.className = 'tarjeta';
+          div.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #C5D5C0, #E8F0E8) border-box`;
+          div.style.border = `var(--card-border-w) solid transparent`;
+          div.style.borderRadius = `var(--card-radius)`;
+          
+          let html = `<div class="tarjeta-titulo">Picos</div><div class="tarjeta-cuerpo" style="padding:0;">`;
+          html += `<div style="display:grid; grid-template-columns: auto 1fr auto; width:100%; border-bottom:1px solid #ddd;">
+            <div style="padding:8px 12px; font-weight:700; font-size:12px; color:#666; background:#f9f9f9;">IDIOMA</div>
+            <div style="padding:8px 12px; font-weight:700; font-size:12px; color:#666; background:#f9f9f9;">ESPAÑOL</div>
+            <div style="padding:8px 12px; font-weight:700; font-size:12px; color:#666; background:#f9f9f9;">DATO</div>
+          </div>`;
+          
+          const items = [];
+          items.forEach((item, idx) => {
+            html += `<div style="display:grid; grid-template-columns: auto 1fr auto; width:100%; border-bottom:0.5px solid #eee;">
+              <div style="padding:8px 12px; color:#333;" class="hablar">${item.idioma || ''}</div>
+              <div style="padding:8px 12px; color:#666; font-size:14px;">${item.spanish || ''}</div>
+              <div style="padding:8px 12px; color:#555; font-size:13px;">${item.dato || ''}</div>
+            </div>`;
+          });
+          
+          if (items.length === 0) {
+            html += `<div style="padding:20px; text-align:center; color:#999; font-size:14px;">Tarjeta vacía - Se completará con contenido del idioma</div>`;
+          }
+          
+          html += `</div>`;
+          div.innerHTML = html;
+          return div;
+        }
+      },
+      {
+        id: 'tarjeta-terreno-valles',
+        titulo: 'Valles',
+        tipo: 'tres-columnas',
+        render: function() {
+          const div = document.createElement('div');
+          div.className = 'tarjeta';
+          div.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #C5D5C0, #E8F0E8) border-box`;
+          div.style.border = `var(--card-border-w) solid transparent`;
+          div.style.borderRadius = `var(--card-radius)`;
+          
+          let html = `<div class="tarjeta-titulo">Valles</div><div class="tarjeta-cuerpo" style="padding:0;">`;
+          html += `<div style="display:grid; grid-template-columns: auto 1fr auto; width:100%; border-bottom:1px solid #ddd;">
+            <div style="padding:8px 12px; font-weight:700; font-size:12px; color:#666; background:#f9f9f9;">IDIOMA</div>
+            <div style="padding:8px 12px; font-weight:700; font-size:12px; color:#666; background:#f9f9f9;">ESPAÑOL</div>
+            <div style="padding:8px 12px; font-weight:700; font-size:12px; color:#666; background:#f9f9f9;">DATO</div>
+          </div>`;
+          
+          const items = [];
+          items.forEach((item, idx) => {
+            html += `<div style="display:grid; grid-template-columns: auto 1fr auto; width:100%; border-bottom:0.5px solid #eee;">
+              <div style="padding:8px 12px; color:#333;" class="hablar">${item.idioma || ''}</div>
+              <div style="padding:8px 12px; color:#666; font-size:14px;">${item.spanish || ''}</div>
+              <div style="padding:8px 12px; color:#555; font-size:13px;">${item.dato || ''}</div>
+            </div>`;
+          });
+          
+          if (items.length === 0) {
+            html += `<div style="padding:20px; text-align:center; color:#999; font-size:14px;">Tarjeta vacía - Se completará con contenido del idioma</div>`;
+          }
+          
+          html += `</div>`;
+          div.innerHTML = html;
+          return div;
+        }
+      },
+      {
+        id: 'tarjeta-terreno-glaciares',
+        titulo: 'Glaciares',
+        tipo: 'tres-columnas',
+        render: function() {
+          const div = document.createElement('div');
+          div.className = 'tarjeta';
+          div.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #C5D5C0, #E8F0E8) border-box`;
+          div.style.border = `var(--card-border-w) solid transparent`;
+          div.style.borderRadius = `var(--card-radius)`;
+          
+          let html = `<div class="tarjeta-titulo">Glaciares</div><div class="tarjeta-cuerpo" style="padding:0;">`;
+          html += `<div style="display:grid; grid-template-columns: auto 1fr auto; width:100%; border-bottom:1px solid #ddd;">
+            <div style="padding:8px 12px; font-weight:700; font-size:12px; color:#666; background:#f9f9f9;">IDIOMA</div>
+            <div style="padding:8px 12px; font-weight:700; font-size:12px; color:#666; background:#f9f9f9;">ESPAÑOL</div>
+            <div style="padding:8px 12px; font-weight:700; font-size:12px; color:#666; background:#f9f9f9;">DATO</div>
+          </div>`;
+          
+          const items = [];
+          items.forEach((item, idx) => {
+            html += `<div style="display:grid; grid-template-columns: auto 1fr auto; width:100%; border-bottom:0.5px solid #eee;">
+              <div style="padding:8px 12px; color:#333;" class="hablar">${item.idioma || ''}</div>
+              <div style="padding:8px 12px; color:#666; font-size:14px;">${item.spanish || ''}</div>
+              <div style="padding:8px 12px; color:#555; font-size:13px;">${item.dato || ''}</div>
+            </div>`;
+          });
+          
+          if (items.length === 0) {
+            html += `<div style="padding:20px; text-align:center; color:#999; font-size:14px;">Tarjeta vacía - Se completará con contenido del idioma</div>`;
+          }
+          
+          html += `</div>`;
+          div.innerHTML = html;
+          return div;
+        }
+      },
+      {
+        id: 'tarjeta-terreno-zonas',
+        titulo: 'Zonas',
+        tipo: 'tres-columnas',
+        render: function() {
+          const div = document.createElement('div');
+          div.className = 'tarjeta';
+          div.style.background = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #C5D5C0, #E8F0E8) border-box`;
+          div.style.border = `var(--card-border-w) solid transparent`;
+          div.style.borderRadius = `var(--card-radius)`;
+          
+          let html = `<div class="tarjeta-titulo">Zonas</div><div class="tarjeta-cuerpo" style="padding:0;">`;
+          html += `<div style="display:grid; grid-template-columns: auto 1fr auto; width:100%; border-bottom:1px solid #ddd;">
+            <div style="padding:8px 12px; font-weight:700; font-size:12px; color:#666; background:#f9f9f9;">IDIOMA</div>
+            <div style="padding:8px 12px; font-weight:700; font-size:12px; color:#666; background:#f9f9f9;">ESPAÑOL</div>
+            <div style="padding:8px 12px; font-weight:700; font-size:12px; color:#666; background:#f9f9f9;">DATO</div>
+          </div>`;
+          
+          const items = [];
+          items.forEach((item, idx) => {
+            html += `<div style="display:grid; grid-template-columns: auto 1fr auto; width:100%; border-bottom:0.5px solid #eee;">
+              <div style="padding:8px 12px; color:#333;" class="hablar">${item.idioma || ''}</div>
+              <div style="padding:8px 12px; color:#666; font-size:14px;">${item.spanish || ''}</div>
+              <div style="padding:8px 12px; color:#555; font-size:13px;">${item.dato || ''}</div>
+            </div>`;
+          });
+          
+          if (items.length === 0) {
+            html += `<div style="padding:20px; text-align:center; color:#999; font-size:14px;">Tarjeta vacía - Se completará con contenido del idioma</div>`;
+          }
+          
+          html += `</div>`;
+          div.innerHTML = html;
+          return div;
+        }
+      }
+    ]
+  },
+  'NÚMEROS Y TIEMPO': {
+    'numeros': [
+      {
+        id: 'tarjeta-numeros',
+        titulo: 'Números',
+        tipo: 'numeros',
+        render: function() {
+          // DATOS DE NÚMEROS CON RANGOS
+          const TEMAS_NUMEROS = {
+            '0-9': {
+              nombre: '0 – 9',
+              items: [
+                { num: '0', es: 'Cero' },
+                { num: '1', es: 'Uno' },
+                { num: '2', es: 'Dos' },
+                { num: '3', es: 'Tres' },
+                { num: '4', es: 'Cuatro' },
+                { num: '5', es: 'Cinco' },
+                { num: '6', es: 'Seis' },
+                { num: '7', es: 'Siete' },
+                { num: '8', es: 'Ocho' },
+                { num: '9', es: 'Nueve' }
+              ]
+            },
+            '10-19': {
+              nombre: '10 – 19',
+              items: [
+                { num: '10', es: 'Diez' },
+                { num: '11', es: 'Once' },
+                { num: '12', es: 'Doce' },
+                { num: '13', es: 'Trece' },
+                { num: '14', es: 'Catorce' },
+                { num: '15', es: 'Quince' },
+                { num: '16', es: 'Dieciséis' },
+                { num: '17', es: 'Diecisiete' },
+                { num: '18', es: 'Dieciocho' },
+                { num: '19', es: 'Diecinueve' }
+              ]
+            },
+            '20-29': {
+              nombre: '20 – 29',
+              items: [
+                { num: '20', es: 'Veinte' },
+                { num: '21', es: 'Veintiuno' },
+                { num: '22', es: 'Veintidós' },
+                { num: '23', es: 'Veintitrés' },
+                { num: '24', es: 'Veinticuatro' },
+                { num: '25', es: 'Veinticinco' },
+                { num: '26', es: 'Veintiséis' },
+                { num: '27', es: 'Veintisiete' },
+                { num: '28', es: 'Veintiocho' },
+                { num: '29', es: 'Veintinueve' }
+              ]
+            },
+            '30-39': {
+              nombre: '30 – 39',
+              items: [
+                { num: '30', es: 'Treinta' },
+                { num: '31', es: 'Treinta y uno' },
+                { num: '32', es: 'Treinta y dos' },
+                { num: '33', es: 'Treinta y tres' },
+                { num: '34', es: 'Treinta y cuatro' },
+                { num: '35', es: 'Treinta y cinco' },
+                { num: '36', es: 'Treinta y seis' },
+                { num: '37', es: 'Treinta y siete' },
+                { num: '38', es: 'Treinta y ocho' },
+                { num: '39', es: 'Treinta y nueve' }
+              ]
+            },
+            '40-49': {
+              nombre: '40 – 49',
+              items: [
+                { num: '40', es: 'Cuarenta' },
+                { num: '41', es: 'Cuarenta y uno' },
+                { num: '42', es: 'Cuarenta y dos' },
+                { num: '43', es: 'Cuarenta y tres' },
+                { num: '44', es: 'Cuarenta y cuatro' },
+                { num: '45', es: 'Cuarenta y cinco' },
+                { num: '46', es: 'Cuarenta y seis' },
+                { num: '47', es: 'Cuarenta y siete' },
+                { num: '48', es: 'Cuarenta y ocho' },
+                { num: '49', es: 'Cuarenta y nueve' }
+              ]
+            },
+            '50-59': {
+              nombre: '50 – 59',
+              items: [
+                { num: '50', es: 'Cincuenta' },
+                { num: '51', es: 'Cincuenta y uno' },
+                { num: '52', es: 'Cincuenta y dos' },
+                { num: '53', es: 'Cincuenta y tres' },
+                { num: '54', es: 'Cincuenta y cuatro' },
+                { num: '55', es: 'Cincuenta y cinco' },
+                { num: '56', es: 'Cincuenta y seis' },
+                { num: '57', es: 'Cincuenta y siete' },
+                { num: '58', es: 'Cincuenta y ocho' },
+                { num: '59', es: 'Cincuenta y nueve' }
+              ]
+            },
+            '60-69': {
+              nombre: '60 – 69',
+              items: [
+                { num: '60', es: 'Sesenta' },
+                { num: '61', es: 'Sesenta y uno' },
+                { num: '62', es: 'Sesenta y dos' },
+                { num: '63', es: 'Sesenta y tres' },
+                { num: '64', es: 'Sesenta y cuatro' },
+                { num: '65', es: 'Sesenta y cinco' },
+                { num: '66', es: 'Sesenta y seis' },
+                { num: '67', es: 'Sesenta y siete' },
+                { num: '68', es: 'Sesenta y ocho' },
+                { num: '69', es: 'Sesenta y nueve' }
+              ]
+            },
+            '70-79': {
+              nombre: '70 – 79',
+              items: [
+                { num: '70', es: 'Setenta' },
+                { num: '71', es: 'Setenta y uno' },
+                { num: '72', es: 'Setenta y dos' },
+                { num: '73', es: 'Setenta y tres' },
+                { num: '74', es: 'Setenta y cuatro' },
+                { num: '75', es: 'Setenta y cinco' },
+                { num: '76', es: 'Setenta y seis' },
+                { num: '77', es: 'Setenta y siete' },
+                { num: '78', es: 'Setenta y ocho' },
+                { num: '79', es: 'Setenta y nueve' }
+              ]
+            },
+            '80-89': {
+              nombre: '80 – 89',
+              items: [
+                { num: '80', es: 'Ochenta' },
+                { num: '81', es: 'Ochenta y uno' },
+                { num: '82', es: 'Ochenta y dos' },
+                { num: '83', es: 'Ochenta y tres' },
+                { num: '84', es: 'Ochenta y cuatro' },
+                { num: '85', es: 'Ochenta y cinco' },
+                { num: '86', es: 'Ochenta y seis' },
+                { num: '87', es: 'Ochenta y siete' },
+                { num: '88', es: 'Ochenta y ocho' },
+                { num: '89', es: 'Ochenta y nueve' }
+              ]
+            },
+            '90-99': {
+              nombre: '90 – 99',
+              items: [
+                { num: '90', es: 'Noventa' },
+                { num: '91', es: 'Noventa y uno' },
+                { num: '92', es: 'Noventa y dos' },
+                { num: '93', es: 'Noventa y tres' },
+                { num: '94', es: 'Noventa y cuatro' },
+                { num: '95', es: 'Noventa y cinco' },
+                { num: '96', es: 'Noventa y seis' },
+                { num: '97', es: 'Noventa y siete' },
+                { num: '98', es: 'Noventa y ocho' },
+                { num: '99', es: 'Noventa y nueve' }
+              ]
+            },
+            '100-999': {
+              nombre: '100 – 999',
+              items: [
+                { num: '100', es: 'Cien' },
+                { num: '101', es: 'Ciento uno' },
+                { num: '200', es: 'Doscientos' },
+                { num: '300', es: 'Trescientos' },
+                { num: '400', es: 'Cuatrocientos' },
+                { num: '500', es: 'Quinientos' },
+                { num: '600', es: 'Seiscientos' },
+                { num: '700', es: 'Setecientos' },
+                { num: '800', es: 'Ochocientos' },
+                { num: '900', es: 'Novecientos' }
+              ]
+            },
+            '1000+': {
+              nombre: '1000+',
+              items: [
+                { num: '1000', es: 'Mil' },
+                { num: '2000', es: 'Dos mil' },
+                { num: '10000', es: 'Diez mil' },
+                { num: '100000', es: 'Cien mil' },
+                { num: '1000000', es: 'Un millón' },
+                { num: '1000000000', es: 'Mil millones' }
+              ]
+            }
+          };
+
+          const renderTarjetaNumeros = (temaKey) => {
+            const key = temaKey && TEMAS_NUMEROS[temaKey] ? temaKey : Object.keys(TEMAS_NUMEROS)[0];
+            const tema = TEMAS_NUMEROS[key];
+
+            const div = document.createElement('div');
+            div.className = 'tarjeta tarjeta-variable';
+            div.dataset.temaActual = key;
+            div.style.background = 'linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #8B7B6F, #D9CFC4) border-box';
+            div.style.border = 'var(--card-border-w) solid transparent';
+            div.style.borderRadius = 'var(--card-radius)';
+
+            let filas = '';
+            tema.items.forEach(it => {
+              filas += `<tr style="border-bottom:0.5px solid var(--border);">
+                <td class="numero-valor" style="padding:12px 8px 12px 16px; font-weight:700; color:#8B7355; min-width:40px; font-size:16px;">${it.num}</td>
+                <td class="hablar" data-hablar="${it.es}" style="padding:12px 8px; cursor:pointer; color:#555; font-size:16px;">${it.es}</td>
+              </tr>`;
+            });
+
+            let opciones = '';
+            Object.entries(TEMAS_NUMEROS).forEach(([k, t]) => {
+              opciones += `<div class="dropdown-item" style="${k === key ? 'font-weight:600;' : ''}">${t.nombre}</div>`;
+            });
+
+            div.innerHTML = `
+              <div style="display:flex; align-items:center; gap:8px; padding:8px 0 8px 8px;">
+                <div class="tarjeta-selector-tema" style="width:24px; height:24px; border-radius:50%; background:#f0f0f0; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; color:#666; flex-shrink:0;">▾</div>
+                <div class="tarjeta-titulo" style="margin:0;">Números — ${tema.nombre}</div>
+              </div>
+              <div class="tarjeta-dropdown-interno" style="position:absolute; top:50px; left:10px; right:10px; background:#ffffff; border:3px solid transparent; background: linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #8B7B6F, #D9CFC4) border-box; border-radius:8px; display:none; flex-direction:column; max-height:250px; overflow-y:auto; z-index:20;">${opciones}</div>
+              <div class="tarjeta-cuerpo" style="padding:0;">
+                <table style="width:100%; border-collapse:collapse; font-size:16px;">${filas}</table>
+              </div>`;
+
+            const btn = div.querySelector('.tarjeta-selector-tema');
+            const drop = div.querySelector('.tarjeta-dropdown-interno');
+            
+            btn.addEventListener('click', ev => {
+              ev.stopPropagation();
+              drop.style.display = drop.style.display === 'flex' ? 'none' : 'flex';
+            });
+            
+            // Agregar data-tema-opcion a cada item del dropdown
+            const items = drop.querySelectorAll('.dropdown-item');
+            const keys = Object.keys(TEMAS_NUMEROS);
+            items.forEach((item, idx) => {
+              item.dataset.temaOpcion = keys[idx];
+              item.addEventListener('click', ev => {
+                ev.stopPropagation();
+                const nuevoKey = item.dataset.temaOpcion;
+                const nueva = renderTarjetaNumeros(nuevoKey);
+                nueva.style.left = div.style.left;
+                nueva.style.top = div.style.top;
+                nueva.style.zIndex = div.style.zIndex;
+                div.replaceWith(nueva);
+                activarArrastre(nueva, 'tarjeta-numeros');
+              });
+            });
+
+            return div;
+          };
+
+          return renderTarjetaNumeros('0-9');
+        }
+      }
+    ],
+    'hora': [],
+    'dias_meses': []
+  },
   'MODOS Y FRASES': [],
   'PERSONAS': [],
   'CASOS': [],
@@ -1157,6 +1643,11 @@ function elegirUnidad(key, nombre, tipo) {
   estado.tema     = null;
   estado.subtema  = null;
   estado.tipoMesa = tipo;
+  
+  // Reset de tarjetas para ABECEDARIO (fuerza a mostrar todas)
+  if (key === 'ABECEDARIO') {
+    estado.tarjetas = {};
+  }
 
   // Resetear clase del body a blanco por defecto
   document.body.className = '';
@@ -1184,22 +1675,7 @@ function elegirUnidad(key, nombre, tipo) {
     Object.values(particleSystemsCASOS).forEach(ps => ps?.stop?.());
     particleSystemCASO6_opaque?.stop?.();
     Object.values(particleSystemsCULTURA).forEach(ps => ps?.stop?.());
-    particleSystemCULTURA_gastronomia_redcircle?.stop?.();
-    particleSystemCULTURA_gastronomia_roundedsquare?.stop?.();
-    particleSystemCULTURA_gastronomia_whitedot?.stop?.();
-    particleSystemCULTURA_gastronomia_hojas?.stop?.();
     particleSystemCOLORES?.stop?.();
-    particleSystemGEOGRAFIA_terreno?.stop?.();
-    particleSystemGEOGRAFIA_terreno_feathers?.stop?.();
-    particleSystemGEOGRAFIA_terreno_squares?.stop?.();
-    particleSystemGEOGRAFIA_flora?.stop?.();
-    particleSystemGEOGRAFIA_flora_feathers?.stop?.();
-    particleSystemGEOGRAFIA_flora_flowers?.stop?.();
-    particleSystemGEOGRAFIA_clima?.stop?.();
-    particleSystemINVIERNO_snowflakes?.stop?.();
-    particleSystemINVIERNO_snowflakes_small?.stop?.();
-    particleSystemVERANO_sand?.stop?.();
-    particleSystemVERANO_sand_small?.stop?.();
   } catch(e) {}
   // ╚═════════════════════════════════════════════════════════════════════════╝
   
@@ -1228,6 +1704,9 @@ function elegirUnidad(key, nombre, tipo) {
     selTema.classList.add('geografia');
   } else if (key === 'NÚMEROS Y TIEMPO') {
     document.body.classList.add('tema-numeros');
+    // Aplicar gradiente piedra a los botones
+    const gradiente = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #8B7B6F, #D9CFC4) border-box`;
+    selUnidad.style.background = gradiente;
   }
 
   // Si es unidad VERBOS (fija), apagar editor
@@ -1297,14 +1776,10 @@ function actualizarParticulasCasos() {
   } catch(e) {}
   
   // Activar según caso
-  if (modo === 'caso1') {
-    try { particleSystemCASO1?.start?.(); } catch(e) {}
-  } else if (modo === 'caso2') {
+  if (modo === 'caso2') {
     try { particleSystemCASO2?.start?.(); } catch(e) {}
   } else if (modo === 'caso3') {
     try { particleSystemCASO3?.start?.(); } catch(e) {}
-  } else if (modo === 'caso4') {
-    try { particleSystemCASO4?.start?.(); } catch(e) {}
   } else if (modo === 'caso5') {
     try { particleSystemCASO5?.start?.(); } catch(e) {}
   } else if (modo === 'caso6') {
@@ -1338,8 +1813,9 @@ function actualizarParticulasCultura() {
   try {
     Object.values(particleSystemsCULTURA).forEach(ps => ps?.stop?.());
     particleSystemCULTURA_gastronomia_redcircle?.stop?.();
-    particleSystemCULTURA_gastronomia_roundedsquare?.stop?.();
-    particleSystemCULTURA_gastronomia_whitedot?.stop?.();
+    particleSystemCULTURA_gastronomia_roundedtriangle?.stop?.();
+    particleSystemCULTURA_gastronomia_leafclear?.stop?.();
+    particleSystemCULTURA_gastronomia_leafdark?.stop?.();
   } catch(e) {}
   
   // Activar según modo
@@ -1350,8 +1826,9 @@ function actualizarParticulasCultura() {
   } else if (modo === 'gastronomia') {
     try {
       particleSystemCULTURA_gastronomia_redcircle?.start?.();
-      particleSystemCULTURA_gastronomia_roundedsquare?.start?.();
-      particleSystemCULTURA_gastronomia_whitedot?.start?.();
+      particleSystemCULTURA_gastronomia_roundedtriangle?.start?.();
+      particleSystemCULTURA_gastronomia_leafclear?.start?.();
+      particleSystemCULTURA_gastronomia_leafdark?.start?.();
     } catch(e) {}
   }
 }
@@ -1378,9 +1855,6 @@ function modoActualNumeros() {
 
 // ── ACTUALIZAR PARTÍCULAS SEGÚN NÚMEROS Y TIEMPO (Mecánica Ruso) ──────────────
 function actualizarParticulasNumeros() {
-  // NOTA: Letritas no tiene partículas asignadas a NÚMEROS Y TIEMPO
-  // Esta función está deshabilitada hasta que se agreguen
-  /*
   const modo = modoActualNumeros();
   
   // Detener TODAS las partículas NÚMEROS primero
@@ -1396,7 +1870,6 @@ function actualizarParticulasNumeros() {
   } else if (modo === 'dias_meses' && particleSystemsNUMEROS['dias_meses']) {
     try { particleSystemsNUMEROS['dias_meses']?.start?.(); } catch(e) {}
   }
-  */
 }
 
 // ── FUNCIONES DE DETECCIÓN DE CONTEXTO MODOS Y FRASES (Mecánica Ruso) ────────
@@ -1491,45 +1964,47 @@ function actualizarParticulasGeografia() {
   
   // Detener TODAS las partículas primero
   try {
-    particleSystemGEOGRAFIA_terreno_feathers?.stop?.();
-    particleSystemGEOGRAFIA_terreno_squares?.stop?.();
-    particleSystemGEOGRAFIA_flora_feathers?.stop?.();
-    particleSystemGEOGRAFIA_flora_flowers?.stop?.();
-    particleSystemGEOGRAFIA_clima?.stop?.();
-    particleSystemINVIERNO_snowflakes?.stop?.();
-    particleSystemINVIERNO_snowflakes_small?.stop?.();
-    particleSystemVERANO_sand?.stop?.();
-    particleSystemVERANO_sand_small?.stop?.();
+    particleSystemGEOGRAFIA_terreno_leafclear?.stop?.();
+    particleSystemGEOGRAFIA_terreno_featherblack?.stop?.();
+    particleSystemGEOGRAFIA_terreno_featherdarkgreen?.stop?.();
+    particleSystemGEOGRAFIA_terreno_roundedhexagon?.stop?.();
+    particleSystemGEOGRAFIA_flora_flower?.stop?.();
+    particleSystemGEOGRAFIA_flora_leafclear?.stop?.();
+    particleSystemGEOGRAFIA_flora_leafdark?.stop?.();
+    particleSystemGEOGRAFIA_flora_redcircle?.stop?.();
+    particleSystemGEOGRAFIA_clima_leafclear?.stop?.();
+    particleSystemGEOGRAFIA_clima_star?.stop?.();
+    particleSystemGEOGRAFIA_clima_flower?.stop?.();
+    particleSystemGEOGRAFIA_clima_aquacircle?.stop?.();
+    particleSystemVERANO_star?.stop?.();
+    particleSystemINVIERNO_bubbles?.stop?.();
+    particleSystemINVIERNO_bubbles_2?.stop?.();
+    particleSystemINVIERNO_whitecircle?.stop?.();
+    particleSystemINVIERNO_whitecircle_2?.stop?.();
   } catch(e) {}
   
   // Activar según modo
   if (modo === 'terreno') {
     try {
-      particleSystemGEOGRAFIA_terreno_feathers?.start?.();
-      particleSystemGEOGRAFIA_terreno_squares?.start?.();
+      particleSystemGEOGRAFIA_terreno_leafclear?.start?.();
+      particleSystemGEOGRAFIA_terreno_featherblack?.start?.();
+      particleSystemGEOGRAFIA_terreno_featherdarkgreen?.start?.();
+      particleSystemGEOGRAFIA_terreno_roundedhexagon?.start?.();
     } catch(e) {}
   } else if (modo === 'flora') {
     try {
-      particleSystemGEOGRAFIA_flora_feathers?.start?.();
-      particleSystemGEOGRAFIA_flora_flowers?.start?.();
+      particleSystemGEOGRAFIA_flora_flower?.start?.();
+      particleSystemGEOGRAFIA_flora_leafclear?.start?.();
+      particleSystemGEOGRAFIA_flora_leafdark?.start?.();
+      particleSystemGEOGRAFIA_flora_redcircle?.start?.();
     } catch(e) {}
   } else if (modo === 'clima') {
     try {
-      particleSystemGEOGRAFIA_clima?.start?.();
+      particleSystemGEOGRAFIA_clima_leafclear?.start?.();
+      particleSystemGEOGRAFIA_clima_star?.start?.();
+      particleSystemGEOGRAFIA_clima_flower?.start?.();
+      particleSystemGEOGRAFIA_clima_aquacircle?.start?.();
     } catch(e) {}
-  } else if (modo === 'actividades') {
-    // Aquí entra Verano/Invierno — decidir según subtema
-    if (estado.subtema === 'invierno') {
-      try {
-        particleSystemINVIERNO_snowflakes?.start?.();
-        particleSystemINVIERNO_snowflakes_small?.start?.();
-      } catch(e) {}
-    } else if (estado.subtema === 'verano') {
-      try {
-        particleSystemVERANO_sand?.start?.();
-        particleSystemVERANO_sand_small?.start?.();
-      } catch(e) {}
-    }
   }
 }
 
@@ -1602,19 +2077,6 @@ function elegirTema(key, nombre) {
         ps.stop();
       }
     });
-    
-    // Agregar hojas de albahaca si es Gastronomía
-    if (key === 'gastronomia') {
-      particleSystemCULTURA_gastronomia_hojas.start();
-      particleSystemCULTURA_gastronomia_redcircle.start();
-      particleSystemCULTURA_gastronomia_roundedsquare.start();
-      particleSystemCULTURA_gastronomia_whitedot.start();
-    } else {
-      particleSystemCULTURA_gastronomia_hojas.stop();
-      particleSystemCULTURA_gastronomia_redcircle.stop();
-      particleSystemCULTURA_gastronomia_roundedsquare.stop();
-      particleSystemCULTURA_gastronomia_whitedot.stop();
-    }
   } else if (estado.unidad === 'GEOGRAFÍA Y CLIMA') {
     document.body.classList.add(`tema-${key}`);
     
@@ -1660,8 +2122,26 @@ function elegirTema(key, nombre) {
     // (se ejecutó al inicio de elegirTema)
   } else if (estado.unidad === 'NÚMEROS Y TIEMPO') {
     document.body.classList.add(`tema-${key}`);
-    selTema.style.background = '';
-    selUnidad.style.background = '';
+    // Aplicar gradientes según tema
+    if (key === 'hora') {
+      // "La Hora" con dorado
+      const gradiente = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #B8860B, #F0E68C) border-box`;
+      selTema.style.background = gradiente;
+      selUnidad.style.background = gradiente;
+    } else if (key === 'numeros') {
+      // "Números" con piedra
+      const gradiente = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #8B7B6F, #D9CFC4) border-box`;
+      selTema.style.background = gradiente;
+      selUnidad.style.background = gradiente;
+    } else if (key === 'dias_meses') {
+      // "Días y Meses" con azul
+      const gradiente = `linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #6B8E9F, #A8C5D8) border-box`;
+      selTema.style.background = gradiente;
+      selUnidad.style.background = gradiente;
+    } else {
+      selTema.style.background = '';
+      selUnidad.style.background = '';
+    }
   } else {
     selTema.style.background = '';
     selUnidad.style.background = '';
@@ -1714,8 +2194,31 @@ function elegirTema(key, nombre) {
 function elegirSubtema(key, nombre, activarPartículas = true) {
   estado.subtema = key;
   
+  // Detener VERANO star si cambiamos de subtema
+  try {
+    particleSystemVERANO_star?.stop?.();
+    particleSystemINVIERNO_bubbles?.stop?.();
+  } catch(e) {}
+  
   // Actualizar partículas según nuevo contexto (mecánica Ruso)
   actualizarParticulasGeografia();
+  
+  // Activar chispa si es VERANO en CLIMA
+  if (key === 'verano' && estado.tema === 'actividades') {
+    try {
+      particleSystemVERANO_star?.start?.();
+    } catch(e) {}
+  }
+  
+  // Activar burbujas si es INVIERNO en CLIMA
+  if (key === 'invierno' && estado.tema === 'actividades') {
+    try {
+      particleSystemINVIERNO_bubbles?.start?.();
+      particleSystemINVIERNO_bubbles_2?.start?.();
+      particleSystemINVIERNO_whitecircle?.start?.();
+      particleSystemINVIERNO_whitecircle_2?.start?.();
+    } catch(e) {}
+  }
   
   // Agregar clase tema para Verano e Invierno
   if ((key === 'verano' || key === 'invierno') && estado.tema === 'actividades') {
@@ -2422,11 +2925,17 @@ function renderMesaLibre(mesa) {
   if (estado.unidad === 'CULTURA' && estado.tema) {
     const temasTarjetas = CONTENIDO_TARJETAS['CULTURA'][estado.tema];
     tarjetasDisponibles = temasTarjetas || [];
+  } else if (estado.unidad === 'GEOGRAFÍA Y CLIMA' && estado.tema) {
+    const temasTarjetas = CONTENIDO_TARJETAS['GEOGRAFÍA Y CLIMA'][estado.tema];
+    tarjetasDisponibles = temasTarjetas || [];
+  } else if (estado.unidad === 'NÚMEROS Y TIEMPO' && estado.tema) {
+    const temasTarjetas = CONTENIDO_TARJETAS['NÚMEROS Y TIEMPO'][estado.tema];
+    tarjetasDisponibles = temasTarjetas || [];
   } else {
     const clave = estado.unidad;
     tarjetasDisponibles = CONTENIDO_TARJETAS[clave] || [];
   }
-
+  
   if (tarjetasDisponibles.length === 0) {
     mesa.innerHTML = '<div class="mesa-vacia" style="opacity:0.4">Mesa lista — sin tarjetas para esta unidad</div>';
     return;
@@ -2608,6 +3117,790 @@ if (estadoGuardado) {
 // ── SISTEMA DE PARTÍCULAS DE BURBUJAS ─────────────────────────────────
 // ── SISTEMA DE PARTÍCULAS GENÉRICO UNIFICADO ──────────────────────────────────
 // ── SISTEMA DE PARTÍCULAS DE BURBUJAS ──────────────────────────────────────────
+// ── RELOJ DE ARENA (DOS TRIÁNGULOS ENFRENTADOS) ────────────────────────────
+class HourglassParticleSystem {
+  constructor(containerId, color = '#B8860B') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 8; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-hourglass-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-hourglass-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutHourglass {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      color: this.color
+    };
+    
+    // Canvas para dibujar reloj de arena (dos triángulos enfrentados)
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    ctx.save();
+    ctx.translate(20, 20);
+    ctx.fillStyle = particle.color;
+    
+    // Triángulo superior (punta hacia abajo)
+    ctx.beginPath();
+    ctx.moveTo(-8, -12);   // Esquina izquierda arriba
+    ctx.lineTo(8, -12);    // Esquina derecha arriba
+    ctx.lineTo(0, -2);     // Punta hacia abajo
+    ctx.closePath();
+    ctx.fill();
+    
+    // Triángulo inferior (punta hacia arriba)
+    ctx.beginPath();
+    ctx.moveTo(-8, 12);    // Esquina izquierda abajo
+    ctx.lineTo(8, 12);     // Esquina derecha abajo
+    ctx.lineTo(0, 2);      // Punta hacia arriba
+    ctx.closePath();
+    ctx.fill();
+    
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 12 + 16;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutHourglass ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+// ── NÚMEROS FLOTANTES (0-9) ────────────────────────────────────────────────
+class NumbersParticleSystem {
+  constructor(containerId, color = '#808080') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    // Crear 16 partículas (2 ciclos de 0-9)
+    for (let i = 0; i < 16; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-numbers-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-numbers-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutNumbers {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const numeros = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const numero = numeros[Math.floor(Math.random() * numeros.length)];
+    
+    const particle = {
+      element: document.createElement('div'),
+      numero: numero,
+      color: this.color
+    };
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 32px;
+      height: 32px;
+      z-index: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: ${particle.color};
+      text-shadow: 0 0 8px ${particle.color};
+      opacity: 0;
+    `;
+    particle.element.textContent = numero;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 32);
+    const y = Math.random() * (window.innerHeight - 32);
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutNumbers ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+class RoundedHexagonParticleSystem {
+  constructor(containerId, color = '#808080') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 10; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-rounded-hexagon-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-rounded-hexagon-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutRoundedHexagon {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      color: this.color
+    };
+    
+    // Canvas para dibujar hexágono redondeado
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    // Función para dibujar hexágono con esquinas redondeadas
+    const roundedHexagon = (x, y, size, r) => {
+      ctx.beginPath();
+      const points = [];
+      for (let i = 0; i < 6; i++) {
+        const angle = (i * 60 * Math.PI) / 180;
+        const px = x + size * Math.cos(angle);
+        const py = y + size * Math.sin(angle);
+        points.push({ x: px, y: py });
+      }
+      
+      // Moverse al primer punto ajustado
+      const d1 = Math.sqrt(Math.pow(points[0].x - points[1].x, 2) + Math.pow(points[0].y - points[1].y, 2));
+      const ratio = r / d1;
+      const startX = points[0].x - (points[0].x - points[1].x) * ratio;
+      const startY = points[0].y - (points[0].y - points[1].y) * ratio;
+      
+      ctx.moveTo(startX, startY);
+      
+      // Dibujar lados con arcTo en las esquinas
+      for (let i = 0; i < 6; i++) {
+        const current = points[i];
+        const next = points[(i + 1) % 6];
+        const nextNext = points[(i + 2) % 6];
+        
+        ctx.arcTo(current.x, current.y, next.x, next.y, r);
+      }
+      ctx.closePath();
+    };
+    
+    ctx.save();
+    ctx.translate(20, 20);
+    ctx.fillStyle = particle.color;
+    roundedHexagon(0, 0, 8, 2);
+    ctx.fill();
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 14 + 18;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutRoundedHexagon ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+class RoundedTriangleParticleSystem {
+  constructor(containerId, color = '#8B7355') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 10; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-rounded-triangle-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-rounded-triangle-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutRoundedTriangle {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      color: this.color
+    };
+    
+    // Canvas para dibujar triángulo redondeado
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    // Función para dibujar triángulo con esquinas redondeadas
+    const roundedTriangle = (x1, y1, x2, y2, x3, y3, r) => {
+      ctx.beginPath();
+      
+      // Lado 1: desde punta 1 a punta 2 con esquina redondeada en punta 1
+      const dx1 = x2 - x1;
+      const dy1 = y2 - y1;
+      const len1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+      const ux1 = dx1 / len1;
+      const uy1 = dy1 / len1;
+      
+      ctx.moveTo(x1 + ux1 * r, y1 + uy1 * r);
+      ctx.arcTo(x2, y2, x3, y3, r);
+      ctx.arcTo(x3, y3, x1, y1, r);
+      ctx.arcTo(x1, y1, x2, y2, r);
+      ctx.closePath();
+    };
+    
+    ctx.save();
+    ctx.translate(20, 20);
+    ctx.fillStyle = particle.color;
+    
+    // Triángulo: arriba, abajo-izquierda, abajo-derecha
+    roundedTriangle(0, -10, -10, 8, 10, 8, 2);
+    ctx.fill();
+    
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 14 + 18;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutRoundedTriangle ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+class CircleTricolorParticleSystem {
+  constructor(containerId, colors = ['#E8C4D8', '#F5EFE7', '#FFFFFF']) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.colorIndex = 0;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 10; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-circle-tricolor-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-circle-tricolor-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutCircleTricolor {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const color = this.colors[this.colorIndex % this.colors.length];
+    this.colorIndex++;
+    
+    const particle = { element: document.createElement('div'), color: color };
+    particle.element.style.cssText = `position: fixed; pointer-events: none; width: 10px; height: 10px; background: ${color}; border-radius: 50%; z-index: 0;`;
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 20);
+    const y = Math.random() * (window.innerHeight - 20);
+    const size = Math.random() * 7 + 3.5;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = size + 'px';
+    particle.element.style.height = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutCircleTricolor ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => { if (!p.element.parentElement) document.body.appendChild(p.element); });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => { if (p.element.parentElement) p.element.parentElement.removeChild(p.element); });
+  }
+}
+
+class CircleRedSmallParticleSystem {
+  constructor(containerId, color = '#C1440E') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 10; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-circle-red-small-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-circle-red-small-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutCircleRedSmall {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = { element: document.createElement('div'), color: this.color };
+    particle.element.style.cssText = `position: fixed; pointer-events: none; width: 10px; height: 10px; background: ${this.color}; border-radius: 50%; z-index: 0;`;
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 20);
+    const y = Math.random() * (window.innerHeight - 20);
+    const size = Math.random() * 7 + 3.5;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = size + 'px';
+    particle.element.style.height = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutCircleRedSmall ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => { if (!p.element.parentElement) document.body.appendChild(p.element); });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => { if (p.element.parentElement) p.element.parentElement.removeChild(p.element); });
+  }
+}
+
+class CircleRedParticleSystem {
+  constructor(containerId, color = '#FF0000') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 10; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-circle-red-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-circle-red-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutCircleRed {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = { element: document.createElement('div'), color: this.color };
+    particle.element.style.cssText = `position: fixed; pointer-events: none; width: 20px; height: 20px; background: ${this.color}; border-radius: 50%; z-index: 0;`;
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const size = Math.random() * 14 + 7;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = size + 'px';
+    particle.element.style.height = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutCircleRed ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => { if (!p.element.parentElement) document.body.appendChild(p.element); });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => { if (p.element.parentElement) p.element.parentElement.removeChild(p.element); });
+  }
+}
+
+class BubblePurpleParticleSystem {
+  constructor(containerId, color = '#8557D4') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  init() {
+    for (let i = 0; i < 15; i++) {
+      this.createParticle();
+    }
+    if (!document.querySelector('style[data-bubble-purple-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-bubble-purple-particles-style', 'true');
+      style.textContent = `@keyframes particleFadeInOutBubblePurple { 0% { opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } }`;
+      document.head.appendChild(style);
+    }
+  }
+  createParticle() {
+    const particle = { element: document.createElement('div'), color: this.color, opacityMult: 1 };
+    particle.element.style.cssText = `position: fixed; pointer-events: none; width: 20px; height: 20px; border-radius: 50%; border: 2px solid ${this.color}; background: transparent; box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1), 0 0 8px ${this.color}; z-index: 0;`;
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const size = (Math.random() * 14 + 7);
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = size + 'px';
+    particle.element.style.height = size + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    void particle.element.offsetWidth;
+    particle.element.style.animation = `particleFadeInOutBubblePurple ${duration}ms ease-in-out ${delay}ms forwards`;
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => { if (!p.element.parentElement) document.body.appendChild(p.element); });
+  }
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => { if (p.element.parentElement) p.element.parentElement.removeChild(p.element); });
+  }
+}
+
 class BubbleParticleSystem {
   constructor(containerId, colors = null) {
     this.container = document.getElementById(containerId);
@@ -2659,6 +3952,75 @@ class BubbleParticleSystem {
     particle.element.style.opacity = '0';
     particle.element.style.animation = 'none';
     particle.element.style.transform = `rotate(${rotation}deg)`;
+    void particle.element.offsetWidth;
+    particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => { if (!p.element.parentElement) document.body.appendChild(p.element); });
+  }
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => { if (p.element.parentElement) p.element.parentElement.removeChild(p.element); });
+  }
+}
+
+
+// ── SISTEMA DE PARTÍCULAS DE TRIÁNGULOS ────────────────────────
+class TriangleParticleSystem {
+  constructor(containerId, colors = null, sizeMultiplier = 1, opacityMultiplier = 1) {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.colors = colors;
+    this.sizeMultiplier = sizeMultiplier;
+    this.opacityMultiplier = opacityMultiplier;
+    this.init();
+  }
+  init() {
+    if (this.colors) {
+      for (let i = 0; i < 15; i++) {
+        const color = this.colors[i % this.colors.length];
+        this.createParticle(color);
+      }
+    } else {
+      for (let i = 0; i < 10; i++) {
+        const color = i % 2 === 0 ? '#B8E3F0' : '#E8F5FB';
+        this.createParticle(color);
+      }
+      for (let i = 0; i < 5; i++) {
+        this.createParticle('#FAFAFA');
+      }
+    }
+    if (!document.querySelector('style[data-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-particles-style', 'true');
+      style.textContent = `@keyframes particleFadeInOut { 0% { opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } }`;
+      document.head.appendChild(style);
+    }
+  }
+  createParticle(color) {
+    const particle = { element: document.createElement('div'), color: color, opacityMult: this.opacityMultiplier };
+    particle.element.style.cssText = `position: fixed; pointer-events: none; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 18px solid ${color}; z-index: 0;`;
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    const x = Math.random() * (window.innerWidth - 30);
+    const y = Math.random() * (window.innerHeight - 30);
+    const size = (Math.random() * 14 + 7) * this.sizeMultiplier;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg) scale(${size / 20})`;
     void particle.element.offsetWidth;
     particle.element.style.animation = `particleFadeInOut ${duration}ms ease-in-out ${delay}ms forwards`;
     setTimeout(() => this.resetParticle(particle), delay + duration + 50);
@@ -3779,6 +5141,126 @@ class FlowerShapedParticleSystem {
 }
 
 // ── PLUMAS FLOTANTES TERRENO (Sistema Hexágono) ────────────────────────
+class FeatherTerrenoDarkParticleSystem {
+  constructor(containerId, color = '#8B7355') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 5; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-feather-terreno-dark-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-feather-terreno-dark-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutFeatherTerrenoDark {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      color: this.color
+    };
+    
+    // Canvas pequeño para dibujar la pluma FINITA
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    // Dibujar pluma FINITA en el canvas
+    ctx.save();
+    ctx.translate(20, 20);
+    ctx.fillStyle = particle.color;
+    ctx.beginPath();
+    ctx.moveTo(0, -12);
+    ctx.quadraticCurveTo(4, -5, 0, 12);
+    ctx.quadraticCurveTo(-4, -5, 0, -12);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.moveTo(0, -10);
+    ctx.lineTo(0, 10);
+    ctx.stroke();
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 14 + 18;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutFeatherTerrenoDark ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
 class FeatherShapedTerrenoParticleSystem {
   constructor(containerId, colors = ['#8B7355', '#D9CFC4']) {
     this.container = document.getElementById(containerId);
@@ -3900,6 +5382,126 @@ class FeatherShapedTerrenoParticleSystem {
 }
 
 // ── HOJAS FLOTANTES (Sistema Hexágono) ───────────────────────────────
+class LeafClearParticleSystem {
+  constructor(containerId, color = '#7CB342') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 10; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-leaf-clear-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-leaf-clear-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutLeafClear {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      color: this.color
+    };
+    
+    // Canvas pequeño para dibujar la hoja
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    // Dibujar hoja en el canvas - MÁS GORDA (hojas)
+    ctx.save();
+    ctx.translate(20, 20);
+    ctx.fillStyle = particle.color;
+    ctx.beginPath();
+    ctx.moveTo(0, -12);
+    ctx.quadraticCurveTo(10, -5, 0, 12);
+    ctx.quadraticCurveTo(-10, -5, 0, -12);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.moveTo(0, -10);
+    ctx.lineTo(0, 10);
+    ctx.stroke();
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 14 + 18;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutLeafClear ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
 class LeafShapedParticleSystem {
   constructor(containerId, colors = ['#556B2F', '#7CB342']) {
     this.container = document.getElementById(containerId);
@@ -4420,6 +6022,528 @@ class FeatherShapedOpaqueParticleSystem {
 }
 
 // ── PARTÍCULAS FORMA PLUMA (Sistema Hexágono) ───────────────────────
+class FlowerPinkParticleSystem {
+  constructor(containerId, color = '#E89CB8') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 10; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-flower-pink-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-flower-pink-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutFlowerPink {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      color: this.color
+    };
+    
+    // Canvas para dibujar la flor
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    // Dibujar flor con 5 pétalos
+    ctx.save();
+    ctx.translate(20, 20);
+    
+    // Dibujar 5 pétalos
+    for (let i = 0; i < 5; i++) {
+      ctx.save();
+      ctx.rotate((i * 2 * Math.PI) / 5);
+      
+      // Pétalo (óvalo/elipse)
+      ctx.fillStyle = particle.color;
+      ctx.beginPath();
+      ctx.ellipse(0, -7, 4, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.restore();
+    }
+    
+    // Centro de la flor (amarillo clarito)
+    ctx.fillStyle = '#FFE8A8';
+    ctx.beginPath();
+    ctx.arc(0, 0, 3, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 14 + 18;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutFlowerPink ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+class FourPointStarParticleSystem {
+  constructor(containerId, color = '#F0C000') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 10; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-four-point-star-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-four-point-star-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutFourPointStar {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      color: this.color
+    };
+    
+    // Canvas pequeño para dibujar la estrella de 4 puntas
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    // Dibujar estrella de 4 puntas en el canvas con brillo
+    ctx.save();
+    ctx.translate(20, 20);
+    
+    // Halo exterior difuso (más grande y más suave)
+    ctx.fillStyle = '#FFE8B3';
+    ctx.globalAlpha = 0.2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 16, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Halo intermedio (difuminación progresiva)
+    ctx.fillStyle = '#FFE8B3';
+    ctx.globalAlpha = 0.4;
+    ctx.beginPath();
+    ctx.arc(0, 0, 12, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Brillo interior
+    ctx.fillStyle = '#FFE8B3';
+    ctx.globalAlpha = 0.6;
+    ctx.beginPath();
+    ctx.arc(0, 0, 8, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Resetear globalAlpha
+    ctx.globalAlpha = 1;
+    
+    // Estrella de 4 puntas (arriba, abajo, izquierda, derecha) - casi blanca manteca
+    ctx.fillStyle = '#FFFACD';
+    ctx.beginPath();
+    // Punta superior
+    ctx.moveTo(0, -10);
+    ctx.lineTo(2, -3);
+    // Punta derecha
+    ctx.lineTo(10, 0);
+    ctx.lineTo(3, 2);
+    // Punta inferior
+    ctx.lineTo(0, 10);
+    ctx.lineTo(-2, 3);
+    // Punta izquierda
+    ctx.lineTo(-10, 0);
+    ctx.lineTo(-3, -2);
+    ctx.closePath();
+    ctx.fill();
+    
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 14 + 18;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutFourPointStar ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+class RoundedSquareFilledParticleSystem {
+  constructor(containerId, color = '#808080') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 10; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-rounded-square-filled-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-rounded-square-filled-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutRoundedSquareFilled {
+          0% { opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      color: this.color
+    };
+    
+    // Canvas pequeño para dibujar el cuadrado redondeado
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    // Función para dibujar rectángulo con esquinas redondeadas
+    const rr = (x, y, w, h, r) => {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    };
+    
+    // Dibujar cuadrado redondeado gris
+    ctx.save();
+    ctx.translate(20, 20);
+    ctx.fillStyle = particle.color;
+    rr(-8, -8, 16, 16, 3);
+    ctx.fill();
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 14 + 18;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutRoundedSquareFilled ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
+class FeatherBlackParticleSystem {
+  constructor(containerId, color = '#000000') {
+    this.container = document.getElementById(containerId);
+    this.particles = [];
+    this.active = false;
+    this.color = color;
+    this.init();
+  }
+  
+  init() {
+    for (let i = 0; i < 10; i++) {
+      this.createParticle();
+    }
+    
+    if (!document.querySelector('style[data-feather-black-particles-style]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-feather-black-particles-style', 'true');
+      style.textContent = `
+        @keyframes particleFadeInOutFeatherBlack {
+          0% { opacity: 0; }
+          10% { opacity: 0.6375; }
+          90% { opacity: 0.6375; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  createParticle() {
+    const particle = {
+      element: document.createElement('div'),
+      canvas: document.createElement('canvas'),
+      color: this.color
+    };
+    
+    // Canvas pequeño para dibujar la pluma
+    particle.canvas.width = 40;
+    particle.canvas.height = 40;
+    const ctx = particle.canvas.getContext('2d');
+    
+    // Dibujar pluma en el canvas - MÁS FINITA
+    ctx.save();
+    ctx.translate(20, 20);
+    ctx.fillStyle = particle.color;
+    ctx.beginPath();
+    ctx.moveTo(0, -12);
+    ctx.quadraticCurveTo(6, -5, 0, 12);
+    ctx.quadraticCurveTo(-6, -5, 0, -12);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.moveTo(0, -10);
+    ctx.lineTo(0, 10);
+    ctx.stroke();
+    ctx.restore();
+    
+    particle.element.style.cssText = `
+      position: fixed;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+      z-index: 0;
+      background-image: url(${particle.canvas.toDataURL()});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    `;
+    
+    this.particles.push(particle);
+    this.resetParticle(particle);
+  }
+  
+  resetParticle(particle) {
+    if (!this.active && particle.element.parentElement) return;
+    
+    const x = Math.random() * (window.innerWidth - 40);
+    const y = Math.random() * (window.innerHeight - 40);
+    const size = Math.random() * 14 + 18;
+    const duration = Math.random() * 5000 + 10000;
+    const delay = Math.random() * 3000;
+    const rotation = Math.random() * 360;
+    
+    particle.element.style.left = x + 'px';
+    particle.element.style.top = y + 'px';
+    particle.element.style.width = (size * 1.4) + 'px';
+    particle.element.style.height = (size * 1.4) + 'px';
+    particle.element.style.opacity = '0';
+    particle.element.style.animation = 'none';
+    particle.element.style.transform = `rotate(${rotation}deg)`;
+    
+    void particle.element.offsetWidth;
+    
+    particle.element.style.animation = `particleFadeInOutFeatherBlack ${duration}ms ease-in-out ${delay}ms forwards`;
+    
+    setTimeout(() => this.resetParticle(particle), delay + duration + 50);
+  }
+  
+  start() {
+    if (this.active) return;
+    this.active = true;
+    this.particles.forEach(p => {
+      if (!p.element.parentElement) {
+        document.body.appendChild(p.element);
+      }
+    });
+  }
+  
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    this.particles.forEach(p => {
+      if (p.element.parentElement) {
+        p.element.parentElement.removeChild(p.element);
+      }
+    });
+  }
+}
+
 class FeatherShapedParticleSystem {
   constructor(containerId, colors = ['#B8E3F0', '#E8F5FB']) {
     this.container = document.getElementById(containerId);
@@ -5713,44 +7837,33 @@ class ParticleSystem {
 
 // Instanciar sistemas de partículas para cada unidad
 const particleSystemABECEDARIO = new ParticleSystem('mesa'); // Celeste + blancas por defecto
-const particleSystemABECEDARIO_feathers = new FeatherCanvasParticleSystem('mesa', '#C9A961'); // Plumas cayendo
 const particleSystemCULTURA = new ParticleSystem('mesa'); // Mismo que ABECEDARIO - Celeste + blancas
-const particleSystemVERBOS = new ParticleSystem('mesa', ['#FFC93C', '#F0932F', '#E63946', '#FF4D9F', '#8557D4', '#17B8CE', '#6FCF3D']); // 7 colores
 
 // Sistemas de partículas para los 6 CASOS (cada uno con sus colores)
-const particleSystemCASO1 = new ParticleSystem('mesa', ['#E63946', '#F7B8BE']); // Rojo + Rojo claro
 const particleSystemCASO2 = new ParticleSystem('mesa', ['#8B7B6F', '#D9CFC4']);
 const particleSystemCASO3 = new BubbleParticleSystem('mesa', ['#8557D4', '#D4C4F0']);
-const particleSystemCASO4 = new RoundedSquareParticleSystem('mesa', ['#556B2F', '#9ACD32']); // Verde musgo + Verde claro
-const particleSystemCASO5_dark = new UnicodeParticleSystem('mesa', '✦', '#C9A961'); // Estrella Unicode arena oscuro
-const particleSystemCASO5_light = new UnicodeParticleSystem('mesa', '✦', '#E8D5B7'); // Estrella Unicode arena claro
-const particleSystemCASO5 = new DualUnicodeParticleSystem(particleSystemCASO5_dark, particleSystemCASO5_light);
+const particleSystemCASO5 = new FourPointStarParticleSystem('mesa', '#F0C000'); // Chispa ocre con brillo
 const particleSystemCASO6 = new FeatherShapedParticleSystem('mesa', ['#B8E3F0', '#E8F5FB']); // Plumas celeste con efecto hexágono
 const particleSystemCASO6_opaque = new FeatherShapedOpaqueParticleSystem('mesa', ['#B8E3F0', '#E8F5FB']); // Plumas opacas
 
 // Map para acceso fácil a sistemas de CASOS
 const particleSystemCULTURA_pais = new ParticleSystem('mesa'); // Celeste + blancas (mismo que ABECEDARIO)
-const particleSystemCULTURA_gastronomia = new CombinedParticleSystem('mesa'); // Rojo, arena
-const particleSystemCULTURA_gastronomia_diamonds = new UnicodeParticleSystem('mesa', '♦', '#556B2F'); // Diamantes musgo
-const particleSystemCULTURA_gastronomia_hojas = new LeafShapedParticleSystem('mesa', ['#558B2F', '#7CB342']); // Hojas albahaca tostada y joven
-const particleSystemCULTURA_gastronomia_redcircle = new RedCircleParticleSystem('mesa'); // Círculo rojo
-const particleSystemCULTURA_gastronomia_roundedsquare = new RoundedSquareArenaParticleSystem('mesa'); // Cuadrado redondeado arena
-const particleSystemCULTURA_gastronomia_whitedot = new WhiteDotParticleSystem('mesa'); // Puntito blanco
+const particleSystemCULTURA_gastronomia_redcircle = new CircleRedSmallParticleSystem('mesa', '#C1440E'); // Círculo rojo oscuro pequeño
+const particleSystemCULTURA_gastronomia_roundedtriangle = new RoundedTriangleParticleSystem('mesa', '#D4A574'); // Triángulo arena cálido/dorado
+const particleSystemCULTURA_gastronomia_leafclear = new LeafClearParticleSystem('mesa', '#7CB342'); // Hoja verde claro
+const particleSystemCULTURA_gastronomia_leafdark = new LeafShapedParticleSystem('mesa', ['#556B2F', '#6B8E23']); // Hoja verde oscuro
 
 const particleSystemsCULTURA = {
-  'pais': particleSystemCULTURA_pais,
-  'gastronomia': particleSystemCULTURA_gastronomia_hojas
+  'pais': particleSystemCULTURA_pais
 };
 
 const particleSystemCOLORES = new ParticleSystem('mesa', ['#C9A961', '#E8D5B7'], 0.5, 0.7); // Arena, 50% tamaño, 70% opacidad
 
-// Geografía y Clima - Terreno con hojas flotantes (como ABECEDARIO)
-const particleSystemGEOGRAFIA_terreno = new LeafShapedParticleSystem('mesa', ['#556B2F', '#7CB342']); // Hojas flotantes
-const particleSystemGEOGRAFIA_terreno_feathers = new FeatherShapedTerrenoParticleSystem('mesa', ['#8B7355', '#D9CFC4']); // Plumas piedra
-const particleSystemGEOGRAFIA_terreno_squares = new RoundedSquareFloatingParticleSystem('mesa', ['#808080', '#D3D3D3']); // Cuadrados redondeados gris
-
-// Invierno - Copos de nieve
-const particleSystemINVIERNO_snowflakes = new SnowflakeParticleSystem('mesa', '❄', ['#FFFFFF', '#E8F4F8']);
+// Geografía y Clima - Terreno con hojas verdes, plumas casi blancas y verde oscuro
+const particleSystemGEOGRAFIA_terreno_leafclear = new LeafClearParticleSystem('mesa', '#7CB342'); // Hoja verde claro
+const particleSystemGEOGRAFIA_terreno_featherblack = new FeatherBlackParticleSystem('mesa', '#F5EFE7'); // Pluma casi blanca
+const particleSystemGEOGRAFIA_terreno_featherdarkgreen = new FeatherBlackParticleSystem('mesa', '#556B2F'); // Pluma verde oscuro
+const particleSystemGEOGRAFIA_terreno_roundedhexagon = new RoundedHexagonParticleSystem('mesa', '#808080'); // Hexágono gris redondeado
 
 // Invierno - Copos de nieve pequeños (30% más chicos, 50% blur)
 class SmallSnowflakeParticleSystem {
@@ -5849,8 +7962,6 @@ class SmallSnowflakeParticleSystem {
     });
   }
 }
-
-const particleSystemINVIERNO_snowflakes_small = new SmallSnowflakeParticleSystem('mesa', '❄', ['#FFFFFF', '#E8F4F8']);
 
 // Verano - Partículas de arena ✻
 class SandParticleSystem {
@@ -6050,34 +8161,46 @@ class SmallSandParticleSystem {
   }
 }
 
-const particleSystemVERANO_sand = new SandParticleSystem('mesa', '✦', ['#f2994a', '#d6409f', '#8b5cf6', '#4fd1d9']);
-const particleSystemVERANO_sand_small = new SmallSandParticleSystem('mesa', '✦', ['#f2994a', '#d6409f', '#8b5cf6', '#4fd1d9']);
-
-// Geografía y Clima - Flora y Fauna (mismas partículas)
-const particleSystemGEOGRAFIA_flora = new LeafShapedParticleSystem('mesa', ['#556B2F', '#7CB342']); // Hojas flotantes
-const particleSystemGEOGRAFIA_flora_feathers = new FeatherShapedTerrenoParticleSystem('mesa', ['#8B7355', '#D9CFC4']); // Plumas piedra
-const particleSystemGEOGRAFIA_flora_flowers = new FlowerShapedParticleSystem('mesa', ['#F48FB1', '#FCE4EC']); // Flores rosa pastel
+// Geografía y Clima - Flora y Fauna
+const particleSystemGEOGRAFIA_flora_flower = new FlowerPinkParticleSystem('mesa', '#E89CB8'); // Flor rosa suave
+const particleSystemGEOGRAFIA_flora_leafclear = new LeafClearParticleSystem('mesa', '#7CB342'); // Hoja verde claro
+const particleSystemGEOGRAFIA_flora_leafdark = new LeafShapedParticleSystem('mesa', ['#556B2F', '#6B8E23']); // Hoja verde oscuro
+const particleSystemGEOGRAFIA_flora_redcircle = new CircleTricolorParticleSystem('mesa', ['#E8C4D8', '#F5EFE7', '#FFFFFF']); // Círculos tricolor rosa clarito, crema, blanco
 
 // Geografía y Clima - Clima y Estaciones
-const particleSystemGEOGRAFIA_clima = new ClimateParticleSystem('mesa', [
-  { tipo: 'flor',   color: '#f0a8c0' },
-  { tipo: 'punto',  color: '#fbf6df' },
-  { tipo: 'punto',  color: '#ffffff' },
-  { tipo: 'punto',  color: '#8ec6e0' },
-  { tipo: 'hoja',   color: '#7cb668' }
-]);
+const particleSystemGEOGRAFIA_clima_leafclear = new LeafClearParticleSystem('mesa', '#A8D26E'); // Hoja verde clarito
+const particleSystemGEOGRAFIA_clima_star = new FourPointStarParticleSystem('mesa', '#F0C000'); // Chispa ocre
+const particleSystemGEOGRAFIA_clima_flower = new FlowerPinkParticleSystem('mesa', '#F0D4E6'); // Flor rosa clarito
+const particleSystemGEOGRAFIA_clima_aquacircle = new CircleTricolorParticleSystem('mesa', ['#C5E9F5', '#A8DFE8', '#8FD5DE']); // Círculos tricolor aqua clarito
+
+const particleSystemVERANO_star = new FourPointStarParticleSystem('mesa', '#F0C000'); // Chispa ocre verano
+
+const particleSystemINVIERNO_bubbles = new ParticleSystem('mesa', ['#FFFFFF', '#FFFFFF', '#FFFFFF']); // Burbujas blancas invierno
+const particleSystemINVIERNO_bubbles_2 = new ParticleSystem('mesa', ['#FFFFFF', '#FFFFFF', '#FFFFFF']); // Burbujas blancas invierno (duplicadas)
+
+const particleSystemINVIERNO_whitecircle = new CircleTricolorParticleSystem('mesa', ['#F5F5F5', '#FAFAFA', '#FFFFFF']); // Círculos tricolor blanco
+const particleSystemINVIERNO_whitecircle_2 = new CircleTricolorParticleSystem('mesa', ['#F5F5F5', '#FAFAFA', '#FFFFFF']); // Círculos tricolor blanco (duplicados)
 
 const particleSystemsGEOGRAFIA = {
-  'terreno': particleSystemGEOGRAFIA_terreno,
-  'flora_fauna': particleSystemGEOGRAFIA_flora,
-  'clima_estaciones': particleSystemGEOGRAFIA_clima
+  'terreno': particleSystemGEOGRAFIA_terreno_leafclear,
+  'flora_fauna': particleSystemGEOGRAFIA_flora_flower,
+  'clima_estaciones': particleSystemGEOGRAFIA_clima_leafclear
+};
+
+// Crear partículas para NÚMEROS Y TIEMPO
+const particleSystemNUMEROS_numeros = new NumbersParticleSystem('mesa', '#808080'); // Gris
+const particleSystemNUMEROS_hora = new HourglassParticleSystem('mesa', '#F5F1E8'); // Blanco hueso
+const particleSystemNUMEROS_dias = new ParticleSystem('mesa', ['#6B8E9F', '#A8C5D8']); // Azul oscuro + azul claro
+
+const particleSystemsNUMEROS = {
+  'numeros': particleSystemNUMEROS_numeros,
+  'hora': particleSystemNUMEROS_hora,
+  'dias_meses': particleSystemNUMEROS_dias
 };
 
 const particleSystemsCASOS = {
-  'caso1': particleSystemCASO1,
   'caso2': particleSystemCASO2,
   'caso3': particleSystemCASO3,
-  'caso4': particleSystemCASO4,
   'caso5': particleSystemCASO5,
   'caso6': particleSystemCASO6
 };
