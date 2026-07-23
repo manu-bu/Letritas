@@ -2468,9 +2468,8 @@ function toggleTarjeta(idx) {
   }
 }
 
-function guardar() {
-  if (!estado.editor) return;
-  
+// ── AUTOSAVE SIN BOTÓN ──
+function autosave() {
   // Guardar posiciones actuales de todas las tarjetas del DOM
   const tarjetas = document.querySelectorAll('.tarjeta, .tarjeta-fija');
   tarjetas.forEach(tarjeta => {
@@ -2485,18 +2484,17 @@ function guardar() {
     }
   });
   
-  // Guardar en localStorage
-  localStorage.setItem('letritas_estado', JSON.stringify(estado.tarjetas));
-  
-  // Feedback visual
-  const btn = document.getElementById('btnGuardar');
-  const textoOriginal = btn.textContent;
-  btn.textContent = '✓';
-  btn.style.color = '#2ecc71'; // Verde
-  setTimeout(() => { 
-    btn.textContent = 'S'; 
-    btn.style.color = '';
-  }, 800);
+  // Guardar en localStorage — SIN FEEDBACK VISUAL, silencioso
+  try {
+    localStorage.setItem('letritas_estado', JSON.stringify(estado.tarjetas));
+  } catch (e) {
+    console.warn('localStorage lleno o no disponible:', e);
+  }
+}
+
+// Función antigua (mantener por compatibilidad)
+function guardar() {
+  autosave();
 }
 
 // ── Render de mesa ────────────────────────────────────────────────────
@@ -3198,15 +3196,15 @@ function activarArrastre(tarjeta, id) {
         left: parseInt(tarjeta.style.left),
         top:  parseInt(tarjeta.style.top)
       };
-      // Guardar automáticamente en localStorage
-      localStorage.setItem('letritas_estado', JSON.stringify(estado.tarjetas));
+      // Autosave silencioso
+      autosave();
     } else if (modo === 'pellizco') {
       estado.tarjetas[id] = {
         ...(estado.tarjetas[id] || {}),
         escala: escalaActual()
       };
-      // Guardar automáticamente en localStorage
-      localStorage.setItem('letritas_estado', JSON.stringify(estado.tarjetas));
+      // Autosave silencioso
+      autosave();
     }
 
     if (pointers.size < 2) modo = null;
